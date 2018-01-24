@@ -69,7 +69,7 @@ if(cluster.isMaster){
 
 		//var debugcnt = 300;
 		sList['sz'].forEach(function(item){
-			debugcnt--;
+			//debugcnt--;
 			//if(debugcnt<0) return;
 
 			var params = {
