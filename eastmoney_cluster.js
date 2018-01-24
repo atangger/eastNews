@@ -60,14 +60,17 @@ if(cluster.isMaster){
 				finNum++;
 				console.log("Master: message received" + m['chat']);
 				console.log("Master: finished job num =" +finNum);
+				if(finNum == sznum){
+					process.exit();
+				}
 			});
 			workerQueue.push(workers[i]);
 		}
 
-		var debugcnt = 15;
+		//var debugcnt = 300;
 		sList['sz'].forEach(function(item){
 			debugcnt--;
-			if(debugcnt<0) return;
+			//if(debugcnt<0) return;
 
 			var params = {
 	        "type": "20",

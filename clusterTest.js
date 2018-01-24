@@ -2,6 +2,7 @@ const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
 
+var receivenum = 0;
 if(cluster.isMaster){
 	console.log('Master: Master is running');
 	// Fork workers
@@ -10,6 +11,10 @@ if(cluster.isMaster){
 		workers[i] = cluster.fork();
 		workers[i].on('message',(m)=>{
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
+			receivenum++;
+			if(receivenum == numCPUs){
+				process.exit();
+			}
 		});
 	}
 	setTimeout(function(){
