@@ -57,7 +57,7 @@ if(cluster.isMaster){
 				workerQueue.push(workers[i]);
 				finNum++;
 				console.log("Master: message received" + m['chat']);
-				console.log("finished job num =" +finNum);
+				console.log("Master: finished job num =" +finNum);
 			});
 			workerQueue.push(workers[i]);
 		}
@@ -78,7 +78,7 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
-		  		console.log("get response!!!");
+		  		console.log("Master: get response, statusCode = " + response.statusCode);
 		  		if(!error&& response.statusCode == 200){
 		  			var msg = new Object();
 		  			msg['name'] = item['name'];
@@ -120,7 +120,7 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
-		  		console.log("worker " + cluster.worker.id + ": get response!!!");
+		  		console.log("worker " + cluster.worker.id + ": get response, statusCode = " + response.statusCode);
 	  			if(!error&& response.statusCode == 200){
 	  				newsUrlList = newsUrlList.concat(JSON.parse(body)['Data']);
 	  			}
