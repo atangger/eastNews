@@ -50,11 +50,14 @@ if(cluster.isMaster){
 		console.log('sh num = ' + shnum);
 		// Fork workers
 		var workers = new Array(numCPUs);
+		var finNum = 0;
 		for(let i = 0; i < numCPUs; i ++){
 			workers[i] = cluster.fork();
 			workers[i].on('message',(m)=>{
 				workerQueue.push(workers[i]);
+				finNum++;
 				console.log("Master: message received" + m['chat']);
+				console.log("finished job num =" +finNum);
 			});
 			workerQueue.push(workers[i]);
 		}
@@ -117,6 +120,7 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
+		  		console.log("worker " + cluster.worker.id + ": get response!!!");
 	  			if(!error&& response.statusCode == 200){
 	  				newsUrlList = newsUrlList.concat(JSON.parse(body)['Data']);
 	  			}
@@ -124,6 +128,7 @@ if(cluster.isMaster){
 	  		});
 		},function(error,result){
 			fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
+			console.log("worker " + cluster.worker.id + ": finishe one job!!!");
 			process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!"});
 		});
 	});
