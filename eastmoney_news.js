@@ -63,7 +63,7 @@ var startSeek = function(callback){
 
 			var pageNum = newslist["TotalPage"];
 			var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
-			var newsUrlList = new Array();	
+			var newsUrlList = new Array();
 			async.reduce(mapArr,0,function(memo,it,cabk){
 					if(it ==0)
 					  return cabk(null, it);
