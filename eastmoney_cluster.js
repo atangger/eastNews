@@ -59,13 +59,6 @@ if(cluster.isMaster){
 			workerQueue.push(workers[i]);
 		}
 
-		setTimeout(function(){
-			console.log("get here");
-			for(let i = 0 ; i < numCPUs;i++){
-				console.log("message for the " + i + " sended");
-				workers[i].send({id: i});
-			}
-		},3000);
 
 		sList['sz'].forEach(function(item){
 			var params = {
