@@ -68,7 +68,7 @@ if(cluster.isMaster){
 		sList['sz'].forEach(function(item){
 			debugcnt--;
 			if(debugcnt<0) return;
-			
+
 			var params = {
 	        "type": "20",
 	        "pageindex": 1,
@@ -125,9 +125,11 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
-		  		console.log("worker " + cluster.worker.id + ": get response, statusCode = " + response.statusCode);
 	  			if(!error&& response.statusCode == 200){
 	  				newsUrlList = newsUrlList.concat(JSON.parse(body)['Data']);
+	  			}
+	  			else{
+	  				console.error(error);
 	  			}
 	  			callback(null,it);	
 	  		});
