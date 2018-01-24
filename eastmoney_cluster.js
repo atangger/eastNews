@@ -51,6 +51,8 @@ if(cluster.isMaster){
 		// Fork workers
 		var workers = new Array(numCPUs);
 		var finNum = 0;
+
+
 		for(let i = 0; i < numCPUs; i ++){
 			workers[i] = cluster.fork();
 			workers[i].on('message',(m)=>{
@@ -62,8 +64,11 @@ if(cluster.isMaster){
 			workerQueue.push(workers[i]);
 		}
 
-
+		var debugcnt = 15;
 		sList['sz'].forEach(function(item){
+			debugcnt--;
+			if(debugcnt<0) return;
+			
 			var params = {
 	        "type": "20",
 	        "pageindex": 1,
