@@ -1,7 +1,7 @@
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
-
+const fs = require('fs');
 var request = require('request');
 var async = require('async');
 
@@ -48,7 +48,6 @@ if(cluster.isMaster){
 		}
 		console.log('sz num = ' + sznum);
 		console.log('sh num = ' + shnum);
-		callback(null,'readList');
 		// Fork workers
 		var workers = new Array(numCPUs);
 		for(let i = 0; i < numCPUs; i ++){
@@ -68,7 +67,7 @@ if(cluster.isMaster){
 			}
 		},3000);
 
-		sList['sz'].foreach(function(item){
+		sList['sz'].forEach(function(item){
 			var params = {
 	        "type": "20",
 	        "pageindex": 1,
@@ -83,6 +82,7 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
+		  		console.log("get response!!!");
 		  		if(!error&& response.statusCode == 200){
 		  			var msg = new Object();
 		  			msg['name'] = item['name'];
@@ -90,7 +90,7 @@ if(cluster.isMaster){
 		  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
 		  			var intl = setInterval(function(){
 		  				var freeWorker = workerQueue.shift();
-		  				if(typeof(freeWorker) != 'undefined')
+		  				if(typeof(freeWorker) != 'undefined'){
 		  					freeWorker.send(msg);
 		  					clearTimeout(intl);
 		  				}
