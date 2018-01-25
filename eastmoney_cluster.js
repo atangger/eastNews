@@ -48,6 +48,8 @@ if(cluster.isMaster){
 		}
 		console.log('sz num = ' + sznum);
 		console.log('sh num = ' + shnum);
+		var sListWhole = new Array();
+		sListWhole = sList['sz'].concat(sList['sh']);
 		// Fork workers
 		var workers = new Array(numCPUs);
 		var finNum = 0;
@@ -60,7 +62,7 @@ if(cluster.isMaster){
 				finNum++;
 				console.log("Master: message received" + m['chat']);
 				console.log("Master: finished job num =" +finNum);
-				if(finNum == sznum){
+				if(finNum == sznum+shnum){
 					process.exit();
 				}
 			});
@@ -68,7 +70,7 @@ if(cluster.isMaster){
 		}
 
 		//var debugcnt = 300;
-		sList['sz'].forEach(function(item){
+		sListWhole.forEach(function(item){
 			//debugcnt--;
 			//if(debugcnt<0) return;
 
