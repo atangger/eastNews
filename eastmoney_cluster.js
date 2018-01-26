@@ -4,10 +4,12 @@ const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const request = require('request');
 const async = require('async');
+const blob = require('./blob.js');
 
 var j = request.jar();
 
 var workerQueue = new Array();
+var bList = new Array();
 
 var url = "http://so.eastmoney.com/Web/GetSearchList?type=20&pageindex=1&pagesize=10&keyword=%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C";
 var rurl = "http://so.eastmoney.com/Web/GetSearchList";
@@ -62,7 +64,9 @@ if(cluster.isMaster){
 				finNum++;
 				console.log("Master: message received" + m['chat']);
 				console.log("Master: finished job num =" +finNum);
-				if(finNum == sznum+shnum){
+				bList.push(m['br']);
+				if(finNum == 30){
+					fs.writeFileSync('bList.json',JSON.stringify(bList));
 					process.exit();
 				}
 			});
@@ -148,11 +152,25 @@ if(cluster.isMaster){
 				for(let i = 1; i <= pageNum;i++ ){
 					newsUrlList = newsUrlList.concat(unorderList[i]);
 				}
-				fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
+
+				//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
 				console.log("worker " + cluster.worker.id + ": finished one job!!!");
-				process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!"});
+				var blobrecords = new Object();
+				blobrecords['id'] = m['id'];
+				blobrecords['name'] = m['name'];
+				blobrecords['pageNum'] = pageNum;
+				blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
+					if(error){
+						console.log('error occur!!!');
+						console.log(error);
+					}
+					else
+						blobrecords['url'] = response;
+
+					process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!",br:blobrecords});
+				});
 			}
 		});
 	});
-	console.log("worker ${process.pid} started ");
+	console.log(`worker ${cluster.worker.id} started`);
 }
