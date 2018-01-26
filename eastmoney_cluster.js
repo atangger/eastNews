@@ -65,7 +65,7 @@ if(cluster.isMaster){
 				console.log("Master: message received" + m['chat']);
 				console.log("Master: finished job num =" +finNum);
 				bList.push(m['br']);
-				if(finNum == 30){
+				if(finNum == shnum+sznum){
 					fs.writeFileSync('bList.json',JSON.stringify(bList));
 					process.exit();
 				}
