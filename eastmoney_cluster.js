@@ -88,7 +88,7 @@ if(cluster.isMaster){
 		  	};
 
 		  	request(options,function(error,response,body){
-		  		console.log("Master: get response, statusCode = " + response.statusCode);
+		  		//console.log("Master: get response, statusCode = " + response.statusCode);
 		  		if(!error&& response.statusCode == 200){
 		  			var msg = new Object();
 		  			msg['name'] = item['name'];
