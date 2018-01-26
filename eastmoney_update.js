@@ -9,7 +9,8 @@ const blob = require('./blob.js');
 var testj =  {name:'weijie tang'};
 var workerQueue = new Array();
 
-var sbList = [{id:'600000',pageNum:'200',name: 'ffff',url:'https://financestore.blob.core.windows.net:443/twjcontainer/test.json?st=2018-01-25T05%3A24%3A44Z&se=2018-02-01T07%3A04%3A44Z&sp=r&sv=2017-04-17&sr=b&sig=2LRnYZCVOsIlxNFVIH5t144lFdX7RDYQMWHtyIbgevs%3D'}];
+var sbList =JSON.stringify(fs.readFileSync('bList.json');
+
 blob.dump('twjcontainer','test.json',JSON.stringify(testj),(error,response) => {
 	if(error){
 		console.log('error occur!!!');
