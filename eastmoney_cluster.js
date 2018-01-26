@@ -2,8 +2,8 @@ const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
 const fs = require('fs');
-var request = require('request');
-var async = require('async');
+const request = require('request');
+const async = require('async');
 
 var j = request.jar();
 
@@ -113,7 +113,7 @@ if(cluster.isMaster){
 		var pageNum = parseInt(m['pageNum']);
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
-		async.reduce(mapArr,0,function(memo,it,callback){
+		async.map(mapArr,function(it,callback){ // TODO: see if map works
 			if(it == 0) return callback(null,it);
 
 			var params = {

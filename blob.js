@@ -2,7 +2,7 @@ const azure = require('azure-storage');
 const blobSvc = azure.createBlobService();
 const async = require('async');
 const config = require(`${__dirname}/config`);
-const Log = require(`${__dirname}/../util/log`);
+const Log = require(`${__dirname}/log`);
 
 const log = new Log({
   tag: 'blob'
