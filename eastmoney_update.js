@@ -58,7 +58,7 @@ if(cluster.isMaster){
 		var newsUrlList = new Array();
 
 		var fflag = 0;
-		async.reduce(mapArr,0,function(memo,it,callback){ // TODO: see if map works
+		async.map(mapArr,function(it,callback){ // TODO: see if map works
 			if(it == 0||fflag==1) return callback(null,it);
 
 			var params = {

@@ -19,7 +19,7 @@ j.setCookie(cookie,url);
 
 if(cluster.isMaster){
 
-
+	var blobList = new Array();
 	var sList = new Object();
 	sList['sz'] = new Array();
 	sList['sh'] = new Array();
@@ -113,6 +113,7 @@ if(cluster.isMaster){
 		var pageNum = parseInt(m['pageNum']);
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
+		var unorderList = new Array();
 		async.map(mapArr,function(it,callback){ // TODO: see if map works
 			if(it == 0) return callback(null,it);
 
@@ -131,7 +132,7 @@ if(cluster.isMaster){
 
 		  	request(options,function(error,response,body){
 	  			if(!error&& response.statusCode == 200){
-	  				newsUrlList = newsUrlList.concat(JSON.parse(body)['Data']);
+	  				unorderList[it] = JSON.parse(body)['Data'];
 	  			}
 	  			else{
 	  				console.error(error);
@@ -144,6 +145,9 @@ if(cluster.isMaster){
 				process.send({chat: "hey master, worker" + cluster.worker.id + "one job not done!"});
 			}
 			else{
+				for(let i = 1; i <= pageNum;i++ ){
+					newsUrlList = newsUrlList.concat(unorderList[i]);
+				}
 				fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
 				console.log("worker " + cluster.worker.id + ": finished one job!!!");
 				process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!"});
