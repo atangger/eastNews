@@ -1,2 +1,3 @@
+#!/bin/sh
 export AZURE_STORAGE_ACCOUNT=financestore 
 export AZURE_STORAGE_ACCESS_KEY=k7haW7Iy/3twR4y5j5GSxbIeI07dtx+Zbmp9RbguxsPX4SOaZ9KIvDC/5YAuAu7SqVbF5CM7P6NjDm7KA858jg==
