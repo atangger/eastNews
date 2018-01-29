@@ -9,7 +9,7 @@ const blob = require('./blob.js');
 var testj =  {name:'weijie tang'};
 var workerQueue = new Array();
 
-var sbList =JSON.stringify(fs.readFileSync('bList.json'));
+var sbList =JSON.parse(fs.readFileSync('bList.json'));
 
 blob.dump('twjcontainer','test.json',JSON.stringify(testj),(error,response) => {
 	if(error){

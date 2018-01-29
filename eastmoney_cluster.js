@@ -67,6 +67,7 @@ if(cluster.isMaster){
 				bList.push(m['br']);
 				if(finNum == shnum+sznum){
 					fs.writeFileSync('bList.json',JSON.stringify(bList));
+					console.log("bList write done!");
 					process.exit();
 				}
 			});
