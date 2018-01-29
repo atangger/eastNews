@@ -50,7 +50,7 @@ if(cluster.isMaster){
 		console.log('sz num = ' + sznum);
 		console.log('sh num = ' + shnum);
 		var sListWhole = new Array();
-		sListWhole = sList['sz'].concat(sList['sh']);
+		sListWhole = sList[' 	sz'].concat(sList['sh']);
 		// Fork workers
 		var workers = new Array(numCPUs);
 		var finNum = 0;

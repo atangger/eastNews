@@ -28,28 +28,29 @@ if(cluster.isMaster){
 		workerQueue.push(workers[i]);
 
 		workers[i].on('message',(m)=>{
+			workerQueue.push(workers[i]);
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
 		});
 	}
 
-	for(let i = 0; i < sbList.length; i++){
-		var item = sbList[i];
-		if(item.pageNum == 0 ) continue;
-
+	var dcnt= 100;
+	sbList.forEach((item) =>{
+		if(item.pageNum == 0 ) return;
+		if(dcnt ==0) return;
+		dcnt--;
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
 				var nl =  JSON.parse(body);
 	  			var intl = setInterval(function(){
 	  				var freeWorker = workerQueue.shift();
 	  				if(typeof(freeWorker) != 'undefined'){
-	  					console.log(nl[0]);
 	  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
 	  					clearTimeout(intl);
 	  				}
 	  			},100);
 			}
 		});
-	}
+	});
 } else{
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
@@ -57,12 +58,14 @@ if(cluster.isMaster){
 		var topDate = Date.parse(nl[0]['Art_CreateTime']);
 
 		var pageNum = parseInt(m['pageNum']);
+		while(pageNum >1000)
+			pageNum =  Math.floor(pageNum/2);
 
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 
 		var fflag = 0;
-		async.map(mapArr,function(it,callback){ // TODO: see if map works
+		async.reduce(mapArr,0,function(memo,it,callback){ // TODO: see if map works
 			if(it == 0||fflag==1) return callback(null,it);
 
 			var params = {
@@ -81,6 +84,8 @@ if(cluster.isMaster){
 		  	request(options,function(error,response,body){
 	  			if(!error&& response.statusCode == 200){
 	  				var nowList = JSON.parse(body)['Data'];
+	  				if(nowList == null)
+	  					console.log("the body = " + body +"\n" + 'it  = ' + it);
 	  				nowList.forEach((aitem) =>{
 	  					if(Date.parse(aitem['Art_CreateTime']) > topDate)
 	  						nl.unshift(aitem);
