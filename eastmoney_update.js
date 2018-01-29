@@ -32,8 +32,9 @@ if(cluster.isMaster){
 		});
 	}
 
-	sbList.forEach((item) =>{
-		if(item.pageNum == 0 ) return;
+	for(let i = 0; i < sbList.length; i++){
+		var item = sbList[i];
+		if(item.pageNum == 0 ) continue;
 
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
@@ -48,7 +49,7 @@ if(cluster.isMaster){
 	  			},100);
 			}
 		});
-	});
+	}
 } else{
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
