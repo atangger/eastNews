@@ -33,16 +33,19 @@ if(cluster.isMaster){
 	}
 
 	sbList.forEach((item) =>{
+		if(item.pageNum == 0 ) return;
+
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
 				var nl =  JSON.parse(body);
 	  			var intl = setInterval(function(){
 	  				var freeWorker = workerQueue.shift();
 	  				if(typeof(freeWorker) != 'undefined'){
+	  					console.log(nl[0]);
 	  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
 	  					clearTimeout(intl);
 	  				}
-	  			},1000);
+	  			},100);
 			}
 		});
 	});
@@ -79,7 +82,7 @@ if(cluster.isMaster){
 	  				var nowList = JSON.parse(body)['Data'];
 	  				nowList.forEach((aitem) =>{
 	  					if(Date.parse(aitem['Art_CreateTime']) > topDate)
-	  						nl.ushift(aitem);
+	  						nl.unshift(aitem);
 	  					else
 	  						fflag = 1;
 	  				});
