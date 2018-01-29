@@ -11,14 +11,13 @@ var workerQueue = new Array();
 
 var sbList =JSON.parse(fs.readFileSync('bList.json'));
 
-blob.dump('twjcontainer','test.json',JSON.stringify(testj),(error,response) => {
-	if(error){
-		console.log('error occur!!!');
-		console.log(error);
-	}
-	else
-		console.log(response);
-});
+var j = request.jar();
+var url = "http://so.eastmoney.com/Web/GetSearchList?type=20&pageindex=1&pagesize=10&keyword=%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C";
+var rurl = "http://so.eastmoney.com/Web/GetSearchList";
+
+var cookie = request.cookie("emstat_bc_emcount=7130645612331980324; st_pvi=84819361064589; emstat_ss_emcount=190_1513101205_2585311130; st_si=92133183274583; emshistory=%5B%22%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C%22%5D; HAList=a-sh-600000-%u6D66%u53D1%u94F6%u884C%2Ca-sz-300231-%u94F6%u4FE1%u79D1%u6280; em_hq_fls=js; qgqp_b_id=922b4f747742667eaf846dcbe643fe89");
+var cookie2 = request.cookie("emstat_bc_emcount=7130645612331980324; st_pvi=84819361064589; emstat_ss_emcount=190_1513101205_2585311130; st_si=20587844746725")
+j.setCookie(cookie,url);
 
 if(cluster.isMaster){
 	console.log('Master: Master is running');

@@ -6,11 +6,10 @@ const request = require('request');
 const async = require('async');
 const blob = require('./blob.js');
 
-var j = request.jar();
-
 var workerQueue = new Array();
 var bList = new Array();
 
+var j = request.jar();
 var url = "http://so.eastmoney.com/Web/GetSearchList?type=20&pageindex=1&pagesize=10&keyword=%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C";
 var rurl = "http://so.eastmoney.com/Web/GetSearchList";
 
