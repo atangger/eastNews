@@ -1,0 +1,62 @@
+version: "3"
+services:
+  redis:
+    image: redis:alpine
+    container_name: finance_redis
+    volumes:
+      - "/redis:/data"
+      - "./config/redis.pro.conf:/usr/local/etc/redis/redis.conf"
+    ports:
+      - "30001:6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    restart: on-failure
+  influxdb:
+    image: influxdb:alpine
+    container_name: finance_influxdb
+    volumes:
+      - "/influxdb/pro:/var/lib/influxdb"
+    ports:
+      - "30002:8086"
+    restart: on-failure
+  chronograf:
+    image: chronograf:alpine
+    container_name: finance_chronograf
+    depends_on:
+      - influxdb
+    volumes:
+      - "/chronnograf/pro:/var/lib/chronnograf"
+    ports:
+      - "30003:8888"
+    environment:
+      - influxdb-url=http://pipeline_default:30002
+    restart: on-failure
+  redis_test:
+    image: redis:alpine
+    container_name: finance_redis_test
+    volumes:
+      - "/redis:/data"
+      - "./config/redis.test.conf:/usr/local/etc/redis/redis.conf"
+    ports:
+      - "40001:6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    restart: on-failure
+  influxdb_test:
+    image: influxdb:alpine
+    container_name: finance_influxdb_test
+    volumes:
+      - "/influxdb/test:/var/lib/influxdb"
+    ports:
+      - "40002:8086"
+    restart: on-failure
+  chronograf_test:
+    image: chronograf:alpine
+    container_name: finance_chronograf_test
+    depends_on:
+      - influxdb_test
+    volumes:
+      - "/chronnograf/test:/var/lib/chronnograf"
+    ports:
+      - "40003:8888"
+    environment:
+      - influxdb-url=http://pipeline_default:40002
+    restart: on-failure

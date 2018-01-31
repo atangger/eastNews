@@ -50,7 +50,7 @@ if(cluster.isMaster){
 		console.log('sz num = ' + sznum);
 		console.log('sh num = ' + shnum);
 		var sListWhole = new Array();
-		sListWhole = sList[' 	sz'].concat(sList['sh']);
+		sListWhole = sList['sz'].concat(sList['sh']);
 		// Fork workers
 		var workers = new Array(numCPUs);
 		var finNum = 0;
@@ -118,6 +118,7 @@ if(cluster.isMaster){
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 		var unorderList = new Array();
+
 		async.map(mapArr,function(it,callback){ // TODO: see if map works
 			if(it == 0) return callback(null,it);
 
