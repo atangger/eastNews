@@ -6,6 +6,10 @@ const request = require('request');
 const async = require('async');
 const blob = require('./blob.js');
 const redis = require('./redis.js');
+
+const sha256 = require('js-sha256');
+
+/*
 let inqueueValues = [
 {
   url: 'http://123.html',
@@ -36,6 +40,9 @@ redis.queue.out('testQueue',(err,res) =>{
 		console.log('out: successfully done!' + JSON.parse(res)['fingerprint']);
 });
 
+*/
+var workerQueue = new Array();
+
 var sbList =JSON.parse(fs.readFileSync('bList.json'));
 
 if(cluster.isMaster){
@@ -44,48 +51,53 @@ if(cluster.isMaster){
 	var workers = new Array(numCPUs);
 	for(let i = 0; i < numCPUs; i ++){
 		workers[i] = cluster.fork();
+		workerQueue.push(workers[i]);
+
 		workers[i].on('message',(m)=>{
+			workerQueue.push(workers[i]);
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
-			receivenum++;
-			if(receivenum == numCPUs){
-				process.exit();
-			}
 		});
 	}
 	sbList.forEach((item) => {
 		if(item.pageNum == 0 ) return;
-		if(dcnt ==0) return;
-		dcnt--;
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
-				var nl =  itJSON.parse(body);
+				var nl =  JSON.parse(body);
 	  			var intl = setInterval(function(){
 	  				var freeWorker = workerQueue.shift();
 	  				if(typeof(freeWorker) != 'undefined'){
-	  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
+	  					freeWorker.send({name:item.name,id:item.id,pageNum:item.pageNum,nl:nl});
 	  					clearTimeout(intl);
 	  				}
 	  			},100);
 			}
 		});
-	})
-	setTimeout(function(){
-		for(let i = 0 ; i < numCPUs;i++){
-			console.log("Master: message for the " + i + " sended");
-			workers[i].send({id: i+1});
-		}
-	},3000);
-
+	});	
 } else{
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
-		async.map(nl,function(it,done){
-			request()
+		var nl = m['nl'];
+		async.reduce(nl,0,function(memo,it,done){
+			if(it == null) 
+				return done();
+			request(it['Art_Url'],(error,response,body)=>{
+				blob.dump('twjhtmlcontainer', m['id']+it['Art_CreateTime'] + '.html',body,(error,response) =>{
+					if(error){
+						console.log('error occur!!!');
+						console.log(error);
+					}
+					done();
+				});
+			});
 		},function(err,result){
-
+			if(err){
+				console.error("in the map error occur!!!");
+				process.send({chat: "hey master, worker" + cluster.worker.id + "one job error occur!!!!!"});
+			}
+			else
+				process.send({chat: "hey master, worker" + cluster.worker.id + "one job done for"+ m['name']});
 		});
-		process.send({chat: "hey master worker" + cluster.worker.id + " get the message!"});
-
+		process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!"});
 	});
 	console.log("worker"+cluster.worker.id+"started ");
 }

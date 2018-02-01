@@ -6,7 +6,6 @@ const request = require('request');
 const async = require('async');
 const blob = require('./blob.js');
 
-var testj =  {name:'weijie tang'};
 var workerQueue = new Array();
 
 var sbList =JSON.parse(fs.readFileSync('bList.json'));
@@ -33,11 +32,13 @@ if(cluster.isMaster){
 		});
 	}
 
-	var dcnt= 100;
+	//var dcnt= 100;
 	sbList.forEach((item) =>{
 		if(item.pageNum == 0 ) return;
+		/*
 		if(dcnt ==0) return;
 		dcnt--;
+		*/
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
 				var nl =  JSON.parse(body);
@@ -56,7 +57,7 @@ if(cluster.isMaster){
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
 		var nl = m['nl'];
 		var topDate = Date.parse(nl[0]['Art_CreateTime']);
-
+		var nl_f = new Array();
 		var pageNum = parseInt(m['pageNum']);
 		while(pageNum >1000)
 			pageNum =  Math.floor(pageNum/2);
@@ -84,11 +85,13 @@ if(cluster.isMaster){
 		  	request(options,function(error,response,body){
 	  			if(!error&& response.statusCode == 200){
 	  				var nowList = JSON.parse(body)['Data'];
-	  				if(nowList == null)
+	  				if(nowList == null){
 	  					console.log("the body = " + body +"\n" + 'it  = ' + it);
+	  					return;
+	  				}
 	  				nowList.forEach((aitem) =>{
 	  					if(Date.parse(aitem['Art_CreateTime']) > topDate)
-	  						nl.unshift(aitem);
+	  						nl_f.push(aitem);
 	  					else
 	  						fflag = 1;
 	  				});
@@ -106,7 +109,7 @@ if(cluster.isMaster){
 			else{
 				fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
 
-				blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl),(error,response) => {
+				blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
 					if(error){
 						console.error('in blob cb error occur!!!');
 						console.error(error);

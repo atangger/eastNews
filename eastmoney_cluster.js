@@ -101,6 +101,7 @@ if(cluster.isMaster){
 		  			var intl = setInterval(function(){
 		  				var freeWorker = workerQueue.shift();
 		  				if(typeof(freeWorker) != 'undefined'){
+		  					console.log('master send message pageNum = ' + msg['pageNum']);
 		  					freeWorker.send(msg);
 		  					clearTimeout(intl);
 		  				}
@@ -115,7 +116,7 @@ if(cluster.isMaster){
 	process.on('message',(m)=>{
 		console.log(cluster.worker.id+ " received msg : " + m["name"]);
 		var pageNum = parseInt(m['pageNum']);
-		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
+		var mapArr = Array.apply(null,Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 		var unorderList = new Array();
 
@@ -168,7 +169,7 @@ if(cluster.isMaster){
 					else
 						blobrecords['url'] = response;
 
-					process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!",br:blobrecords});
+					process.send({chat: "hey master, worker " + cluster.worker.id + " one job done!",br:blobrecords});
 				});
 			}
 		});
