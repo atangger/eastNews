@@ -98,6 +98,10 @@ if(cluster.isMaster){
 		  			msg['name'] = item['name'];
 		  			msg['id'] = item['id'];
 		  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
+		  			if(parseInt(msg['pageNum']) == NaN)
+		  			{
+		  				console.log("PAGENUM NAN!!!!!!!!");
+		  			}
 		  			var intl = setInterval(function(){
 		  				var freeWorker = workerQueue.shift();
 		  				if(typeof(freeWorker) != 'undefined'){
