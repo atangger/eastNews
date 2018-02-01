@@ -13,6 +13,10 @@ if(cluster.isMaster){
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
 			receivenum++;
 			if(receivenum == numCPUs){
+				// for(let j = 0; j <numCPUs;j++){
+				// 	workers[i].send()
+				// }
+				
 				process.exit();
 			}
 		});
@@ -29,5 +33,9 @@ if(cluster.isMaster){
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["id"]);
 		process.send({chat: "hey master worker" + cluster.worker.id + " get the message!"});
 	});
+	process.on('exit',(m,s)=>{
+		console.log("worker" + cluster.worker.id+ ": received msg to die ");
+		process.exit();
+	})
 	console.log("worker"+cluster.worker.id+"started ");
 }
