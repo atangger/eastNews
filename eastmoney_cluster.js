@@ -116,7 +116,14 @@ if(cluster.isMaster){
 	process.on('message',(m)=>{
 		console.log(cluster.worker.id+ " received msg : " + m["name"]);
 		var pageNum = parseInt(m['pageNum']);
-		var mapArr = Array.apply(null,Array(pageNum+1)).map(function (_, i) {return i;});
+		try{
+			var mapArr = Array.apply(null,Array(pageNum+1)).map(function (_, i) {return i;});
+		}
+		catch(err){
+			console.log('the pageNum = ' + pageNum);
+			console.log(err);
+			process.exit();
+		}
 		var newsUrlList = new Array();
 		var unorderList = new Array();
 
