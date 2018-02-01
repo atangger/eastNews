@@ -163,6 +163,10 @@ if(cluster.isMaster){
 				for(let i = 1; i <= pageNum;i++ ){
 					newsUrlList = newsUrlList.concat(unorderList[i]);
 				}
+				for(let i = 0; i < newsUrlList.length; i ++){
+					if(newsUrlList[i] == null) 
+						console.log("THERE IS NULLLLLLLLL!!!!!!!");
+				}
 
 				//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
 				console.log("worker " + cluster.worker.id + ": finished one job!!!");
