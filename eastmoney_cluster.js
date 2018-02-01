@@ -142,12 +142,7 @@ if(cluster.isMaster){
 
 		  	request(options,function(error,response,body){
 	  			if(!error&& response.statusCode == 200){
-	  				unorderList[it] = new Array();
-	  				var tempList = JSON.parse(body)['Data'];
-	  				for(let i = 0;i<tempList.length;i++){
-	  					if(tempList[i] != null)
-	  						unorderList[it].push(tempList[i]);
-	  				}
+	  				unorderList[it] = JSON.parse(body)['Data'];
 	  			}
 	  			else{
 	  				console.error(error);
@@ -161,11 +156,8 @@ if(cluster.isMaster){
 			}
 			else{
 				for(let i = 1; i <= pageNum;i++ ){
-					newsUrlList = newsUrlList.concat(unorderList[i]);
-				}
-				for(let i = 0; i < newsUrlList.length; i ++){
-					if(newsUrlList[i] == null) 
-						console.log("THERE IS NULLLLLLLLL!!!!!!!");
+					if(unorderList[i] != null)
+						newsUrlList = newsUrlList.concat(unorderList[i]);
 				}
 
 				//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
