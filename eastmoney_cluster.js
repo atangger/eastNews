@@ -133,7 +133,11 @@ if(cluster.isMaster){
 			var options = {
 		    url: rurl,
 		    jar:j,
-		    qs: params
+		    qs: params,
+		    headers:
+		    {
+		    	connection:'keep-alive'
+		    }
 		  	};
 
 		  	request(options,function(error,response,body){
