@@ -145,7 +145,7 @@ if(cluster.isMaster){
 	  				unorderList[it] = new Array();
 	  				var tempList = JSON.parse(body)['Data'];
 	  				for(let i = 0;i<tempList.length;i++){
-	  					if(tempList[i] == null)
+	  					if(tempList[i] != null)
 	  						unorderList[it].push(tempList[i]);
 	  				}
 	  			}
