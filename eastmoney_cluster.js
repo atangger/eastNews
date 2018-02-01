@@ -142,7 +142,12 @@ if(cluster.isMaster){
 
 		  	request(options,function(error,response,body){
 	  			if(!error&& response.statusCode == 200){
-	  				unorderList[it] = JSON.parse(body)['Data'];
+	  				unorderList[it] = new Array();
+	  				var tempList = JSON.parse(body)['Data'];
+	  				for(let i = 0;i<tempList.length;i++){
+	  					if(tempList[i] != null)
+	  						unorderList[it].push(tempList[i]);
+	  				}
 	  			}
 	  			else{
 	  				console.error(error);
