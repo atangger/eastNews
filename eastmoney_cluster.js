@@ -155,17 +155,17 @@ if(cluster.isMaster){
 		  				unorderList[it] = JSON.parse(body)['Data'];
 		  				if(unorderList[it] == null){
 		  					console.log("DEBUG<<<<<in the map NULL occured!!!!!>>>>>")
+		  					flag = 0;
 		  					return;
 		  				}
 		  				clearTimeout(w_intl);
-		  				flag = 0;
 		  				callback(null,it);
 		  			}
 		  			else{
 		  				console.error(error);
-		  				flag = 0;
 		  				callback(error,it);
-		  			}	
+		  			}
+		  			flag = 0;	
 		  		});
 		  	},100);
 		},function(err,result){
