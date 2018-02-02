@@ -24,7 +24,7 @@ if(cluster.isMaster){
 	var sList = new Object();
 	sList['sz'] = new Array();
 	sList['sh'] = new Array();
-	console.log('Master ${process.pid} is running');
+	console.log(`Master ${process.pid} is running`);
 	
 	fs.readFile('sl.json',function(err,data){
 
@@ -61,7 +61,7 @@ if(cluster.isMaster){
 			workers[i].on('message',(m)=>{
 				workerQueue.push(workers[i]);
 				finNum++;
-				console.log("Master: message received" + m['chat']);
+				console.log("Master: message received: " + m['chat']);
 				console.log("Master: finished job num =" +finNum);
 				bList.push(m['br']);
 				if(finNum == shnum+sznum){
@@ -136,7 +136,7 @@ if(cluster.isMaster){
 				var nowPage = mapArr.shift();	
 				if(typeof(nowPage) == 'undefined'){
 					clearTimeout(w_interval);
-					
+
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
@@ -150,7 +150,7 @@ if(cluster.isMaster){
 					blobrecords['pageNum'] = pageNum;
 					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
 						if(error){
-							console.log('error occur!!!');
+							console.log('Blob: error occur!!!');
 							console.log(error);
 						}
 						else
@@ -190,7 +190,7 @@ if(cluster.isMaster){
 		  			else{
 		  				mapArr.push(nowPage);
 		  				nowReqNum--;
-		  				console.error(error);
+		  				console.error('Error occur : '+ error);
 		  			}
 			  	});
 			}
