@@ -159,7 +159,7 @@ if(cluster.isMaster){
 		  			}
 		  			else{
 		  				console.error(error);
-		  				callback(error,it);
+		  				//callback(error,it);
 		  			}	
 		  		});
 		  	},100);
