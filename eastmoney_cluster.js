@@ -146,7 +146,10 @@ if(cluster.isMaster){
 		    	connection:'keep-alive'
 		    }
 		  	};
+		  	var flag = 0;
 		  	var w_intl = setInterval(function(){
+		  		if(flag) return ;
+		  		flag = 1;
 			  	request(options,function(error,response,body){
 		  			if(!error&& response.statusCode == 200){
 		  				unorderList[it] = JSON.parse(body)['Data'];
@@ -155,11 +158,13 @@ if(cluster.isMaster){
 		  					return;
 		  				}
 		  				clearTimeout(w_intl);
+		  				flag = 0;
 		  				callback(null,it);
 		  			}
 		  			else{
 		  				console.error(error);
-		  				//callback(error,it);
+		  				flag = 0;
+		  				callback(error,it);
 		  			}	
 		  		});
 		  	},100);
