@@ -154,7 +154,6 @@ if(cluster.isMaster){
 		  			if(!error&& response.statusCode == 200){
 		  				unorderList[it] = JSON.parse(body)['Data'];
 		  				if(unorderList[it] == null){
-		  					console.log("DEBUG<<<<<in the map NULL occured!!!!!>>>>>")
 		  					flag = 0;
 		  					return;
 		  				}
