@@ -90,29 +90,31 @@ if(cluster.isMaster){
 		    jar:j,
 		    qs: params
 		  	};
-
-		  	request(options,function(error,response,body){
-		  		//console.log("Master: get response, statusCode = " + response.statusCode);
-		  		if(!error&& response.statusCode == 200){
-		  			var msg = new Object();
-		  			msg['name'] = item['name'];
-		  			msg['id'] = item['id'];
-		  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
-		  			if(!JSON.parse(body)['IsSuccess'])
-		  			{
-		  				console.log("<<<<Request for firstPage failed. Skipped.>>>>")
-		  				return;
-		  			}
-		  			var intl = setInterval(function(){
-		  				var freeWorker = workerQueue.shift();
-		  				if(typeof(freeWorker) != 'undefined'){
-		  					console.log('master send message pageNum = ' + msg['pageNum']);
-		  					freeWorker.send(msg);
-		  					clearTimeout(intl);
-		  				}
-		  			},1000);
-		  		}
-		  	});
+		  	var interval = setInterval(function(){
+			  	request(options,function(error,response,body){
+			  		//console.log("Master: get response, statusCode = " + response.statusCode);
+			  		if(!error&& response.statusCode == 200){
+			  			var msg = new Object();
+			  			msg['name'] = item['name'];
+			  			msg['id'] = item['id'];
+			  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
+			  			if(!JSON.parse(body)['IsSuccess'])
+			  			{
+			  				console.log("DEBUG<<<<Request for firstPage failed. Try again.>>>>")
+			  				return;
+			  			}
+			  			clearTimeout(interval);
+			  			var intl = setInterval(function(){
+			  				var freeWorker = workerQueue.shift();
+			  				if(typeof(freeWorker) != 'undefined'){
+			  					console.log('master send message pageNum = ' + msg['pageNum']);
+			  					freeWorker.send(msg);
+			  					clearTimeout(intl);
+			  				}
+			  			},100);
+			  		}
+			  	});
+		  	},1000)
 
 		});
 
@@ -144,18 +146,23 @@ if(cluster.isMaster){
 		    	connection:'keep-alive'
 		    }
 		  	};
-
-		  	request(options,function(error,response,body){
-	  			if(!error&& response.statusCode == 200){
-	  				unorderList[it] = JSON.parse(body)['Data'];
-	  				if(unorderList[it] == null)
-	  					console.log("<<<<<in the map NULL occured!!!!!>>>>>")
-	  			}
-	  			else{
-	  				console.error(error);
-	  			}
-	  			callback(null,it);	
-	  		});
+		  	var w_intl = setInterval(function(){
+			  	request(options,function(error,response,body){
+		  			if(!error&& response.statusCode == 200){
+		  				unorderList[it] = JSON.parse(body)['Data'];
+		  				if(unorderList[it] == null){
+		  					console.log("DEBUG<<<<<in the map NULL occured!!!!!>>>>>")
+		  					return;
+		  				}
+		  				clearTimeout(w_intl);
+		  				callback(null,it);
+		  			}
+		  			else{
+		  				console.error(error);
+		  				callback(error,it);
+		  			}	
+		  		});
+		  	},100);
 		},function(err,result){
 			if(err){
 				console.error(err);
