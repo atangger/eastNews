@@ -135,6 +135,8 @@ if(cluster.isMaster){
 				nowReqNum++;
 				var nowPage = mapArr.shift();	
 				if(typeof(nowPage) == 'undefined'){
+					clearTimeout(w_interval);
+					
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
