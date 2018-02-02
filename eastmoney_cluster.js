@@ -156,7 +156,7 @@ if(cluster.isMaster){
 						else
 							blobrecords['url'] = response;
 
-						process.send({chat: "hey master, worker " + cluster.worker.id + " one job done!",br:blobrecords});
+						process.send({chat: "hey master, worker " + cluster.worker.id + " one job for " + m['name'] +" done!",br:blobrecords});
 					});
 					return;
 				}
@@ -195,79 +195,6 @@ if(cluster.isMaster){
 			  	});
 			}
 		},100);
-	/*
-		async.map(mapArr,function(it,callback){ // TODO: see if map works
-			if(it == 0) return callback(null,it);
-
-			var params = {
-	        "type": "20",
-	        "pageindex": it,
-	        "pagesize" : "10",
-	        "keyword": m["name"]
-	    	};
-
-			var options = {
-		    url: rurl,
-		    jar:j,
-		    qs: params,
-		    headers:
-		    {
-		    	connection:'keep-alive'
-		    }
-		  	};
-
-		  	var flag = 0;
-		  	var w_intl = setInterval(function(){
-		  		if(flag) return;
-		  		flag = 1;
-			  	request(options,function(error,response,body){
-		  			if(!error&& response.statusCode == 200){
-		  				unorderList[it] = JSON.parse(body)['Data'];
-		  				if(unorderList[it] == null){
-		  					flag = 0;
-		  					return;
-		  				}
-		  				clearTimeout(w_intl);
-		  				callback(null,it);
-		  			}
-		  			else{
-		  				console.error(error);
-		  				callback(error,it);
-		  			}
-		  			flag = 0;	
-		  		});
-		  	},1000);
-
-		},function(err,result){
-			if(err){
-				console.error(err);
-				process.send({chat: "hey master, worker" + cluster.worker.id + "one job not done!"});
-			}
-			else{
-				for(let i = 1; i <= pageNum;i++ ){
-					if(unorderList[i] != null)
-						newsUrlList = newsUrlList.concat(unorderList[i]);
-				}
-
-				//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
-				console.log("worker " + cluster.worker.id + ": finished one job!!!");
-				var blobrecords = new Object();
-				blobrecords['id'] = m['id'];
-				blobrecords['name'] = m['name'];
-				blobrecords['pageNum'] = pageNum;
-				blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
-					if(error){
-						console.log('error occur!!!');
-						console.log(error);
-					}
-					else
-						blobrecords['url'] = response;
-
-					process.send({chat: "hey master, worker " + cluster.worker.id + " one job done!",br:blobrecords});
-				});
-			}
-		});
-		*/
 	});
 	console.log(`worker ${cluster.worker.id} started`);
 }
