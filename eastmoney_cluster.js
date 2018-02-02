@@ -126,7 +126,74 @@ if(cluster.isMaster){
 		var mapArr = Array.apply(null,Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 		var unorderList = new Array();
+		var maxReqNum = 60;
+		var nowReqNum = 0;
 
+		mapArr.shift();
+		var w_interval = setInterval(function(){
+			if(nowReqNum < maxReqNum){
+				nowReqNum++;
+				var nowPage = mapArr.shift();	
+				if(typeof(nowPage) == 'undefined'){
+					for(let i = 1; i <= pageNum;i++ ){
+						if(unorderList[i] != null)
+							newsUrlList = newsUrlList.concat(unorderList[i]);
+					}
+
+					//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
+					console.log("worker " + cluster.worker.id + ": finished one job!!!");
+					var blobrecords = new Object();
+					blobrecords['id'] = m['id'];
+					blobrecords['name'] = m['name'];
+					blobrecords['pageNum'] = pageNum;
+					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
+						if(error){
+							console.log('error occur!!!');
+							console.log(error);
+						}
+						else
+							blobrecords['url'] = response;
+
+						process.send({chat: "hey master, worker " + cluster.worker.id + " one job done!",br:blobrecords});
+					});
+					return;
+				}
+				var params = {
+		        "type": "20",
+		        "pageindex": nowPage,
+		        "pagesize" : "10",
+		        "keyword": m["name"]
+		    	};
+
+				var options = {
+			    url: rurl,
+			    jar:j,
+			    qs: params,
+			    headers:
+			    {
+			    	connection:'keep-alive'
+			    }
+			  	};
+			  	request(options,function(error,response,body){
+			  		if(!error&& response.statusCode == 200){
+			  			var rb = JSON.parse(body);
+		  				if(rb['IsSuccess'] != null){
+		  					unorderList[nowPage] = JSON.parse(body)['Data'];
+		  				}
+		  				else{
+		  					mapArr.push(nowPage);
+		  				}
+	  					nowReqNum--;
+		  			}
+		  			else{
+		  				mapArr.push(nowPage);
+		  				nowReqNum--;
+		  				console.error(error);
+		  			}
+			  	});
+			}
+		},100);
+	/*
 		async.map(mapArr,function(it,callback){ // TODO: see if map works
 			if(it == 0) return callback(null,it);
 
@@ -146,9 +213,10 @@ if(cluster.isMaster){
 		    	connection:'keep-alive'
 		    }
 		  	};
+
 		  	var flag = 0;
 		  	var w_intl = setInterval(function(){
-		  		if(flag) return ;
+		  		if(flag) return;
 		  		flag = 1;
 			  	request(options,function(error,response,body){
 		  			if(!error&& response.statusCode == 200){
@@ -166,7 +234,8 @@ if(cluster.isMaster){
 		  			}
 		  			flag = 0;	
 		  		});
-		  	},100);
+		  	},1000);
+
 		},function(err,result){
 			if(err){
 				console.error(err);
@@ -196,6 +265,7 @@ if(cluster.isMaster){
 				});
 			}
 		});
+		*/
 	});
 	console.log(`worker ${cluster.worker.id} started`);
 }
