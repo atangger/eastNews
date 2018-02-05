@@ -5,7 +5,7 @@ const fs = require('fs');
 const request = require('request');
 const async = require('async');
 const blob = require('./blob.js');
-
+const stream = require(`./stream`);
 var workerQueue = new Array();
 
 var sbList =JSON.parse(fs.readFileSync('bList.json'));
@@ -31,7 +31,21 @@ if(cluster.isMaster){
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
 		});
 	}
-
+	stream.create('masterQueue',(i) =>{
+		request(item.url,(error,response,body) =>{
+			if(!error&& response.statusCode == 200){
+				var nl =  JSON.parse(body);
+  				var freeWorker = workerQueue.shift();
+  				if(typeof(freeWorker) != 'undefined'){
+  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
+  					stream.finished('masterQueue');
+  				}
+  				else
+  					stream.retry('masterQueue',i);
+			}
+		});
+	});
+	/*
 	sbList.forEach((item) =>{
 		if(item.pageNum == 0 ) return;
 		var interval = setInterval(function(){
@@ -50,6 +64,7 @@ if(cluster.isMaster){
 			});
 		},100);
 	});
+	*/
 } else{
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
