@@ -32,25 +32,23 @@ if(cluster.isMaster){
 		});
 	}
 
-	//var dcnt= 100;
 	sbList.forEach((item) =>{
 		if(item.pageNum == 0 ) return;
-		/*
-		if(dcnt ==0) return;
-		dcnt--;
-		*/
-		request(item.url,(error,response,body) =>{
-			if(!error&& response.statusCode == 200){
-				var nl =  JSON.parse(body);
-	  			var intl = setInterval(function(){
-	  				var freeWorker = workerQueue.shift();
-	  				if(typeof(freeWorker) != 'undefined'){
-	  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
-	  					clearTimeout(intl);
-	  				}
-	  			},100);
-			}
-		});
+		var interval = setInterval(function(){
+			request(item.url,(error,response,body) =>{
+				if(!error&& response.statusCode == 200){
+					var nl =  JSON.parse(body);
+		  			var intl = setInterval(function(){
+		  				var freeWorker = workerQueue.shift();
+		  				if(typeof(freeWorker) != 'undefined'){
+		  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
+		  					clearTimeout(intl);
+		  				}
+		  			},100);
+		  			clearTimeout(interval);
+				}
+			});
+		},1000);
 	});
 } else{
 	process.on('message',(m)=>{
@@ -65,63 +63,70 @@ if(cluster.isMaster){
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 
+		var maxReqnum = 1;
+		var nowReqnum = 0;
 		var fflag = 0;
-		async.reduce(mapArr,0,function(memo,it,callback){ // TODO: see if map works
-			if(it == 0||fflag==1) return callback(null,it);
+		mapArr.shift();
+		var nl_f = new Array();
+		var w_interval = setInterval(function(){
+			if(nowReqnum <maxReqnum){
+				nowReqnum++;
+				nowPage = mapArr.shift();
+				if(typeof(nowPage) == 'undefined'){
+					clearTimeout(w_interval);
+					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
+						if(error){
+							console.error('in blob cb error occur!!!');
+							console.error(error);
+						}
+						else{
+							//console.log(response);
+							console.log("worker " + cluster.worker.id + ": finished one job!!!");
+							process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
+						}
+					});
+				}
+				var params = {
+		        "type": "20",
+		        "pageindex": nowPage,
+		        "pagesize" : "10",
+		        "keyword": m["name"]
+		    	};
 
-			var params = {
-	        "type": "20",
-	        "pageindex": it,
-	        "pagesize" : "10",
-	        "keyword": m["name"]
-	    	};
+				var options = {
+			    url: rurl,
+			    jar:j,
+			    qs: params,
+			    headers:
+			    {
+			    	connection:'keep-alive'
+			    }
+			  	};
 
-			var options = {
-		    url: rurl,
-		    jar:j,
-		    qs: params
-		  	};
-
-		  	request(options,function(error,response,body){
-	  			if(!error&& response.statusCode == 200){
-	  				var nowList = JSON.parse(body)['Data'];
-	  				if(nowList == null){
-	  					console.log("the body = " + body +"\n" + 'it  = ' + it);
-	  					return;
-	  				}
-	  				nowList.forEach((aitem) =>{
-	  					if(Date.parse(aitem['Art_CreateTime']) > topDate)
-	  						nl_f.push(aitem);
-	  					else
-	  						fflag = 1;
-	  				});
-	  			}
-	  			else{
-	  				console.error(error);
-	  			}
-	  			callback(null,it);	
-	  		});
-		},function(err,result){
-			if(err){
-				console.error(err);
-				process.send({chat: "hey master, worker" + cluster.worker.id + "had error!!!!"});
+			  	request(options,function(error,response,body){
+			  		if(!error&& response.statusCode == 200){
+			  			var rb = JSON.parse(body);
+		  				if(rb['IsSuccess'] != null){
+		  					for(let i = 0; i < rb['Data'].length;i++){
+		  						if(Data.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
+		  							nl_f.push(rb['Data'][i]);
+		  						}
+		  						else{
+		  							mapArr.splice(0,mapArr.length);
+		  						}	
+		  					}
+		  				}
+		  				else
+		  					mapArr.unshift(nowPage);
+		  			}
+		  			else{
+		  				mapArr.unshift(nowPage);
+		  				console.error('Error occur : '+ error);
+		  			}
+  					nowReqNum--;
+			  	});
 			}
-			else{
-				fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
-
-				blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
-					if(error){
-						console.error('in blob cb error occur!!!');
-						console.error(error);
-					}
-					else{
-						//console.log(response);
-						console.log("worker " + cluster.worker.id + ": finished one job!!!");
-						process.send({chat: "hey master, worker" + cluster.worker.id + "one job done!"});
-					}
-				});
-			}
-		});
+		},100);
 	});
 	console.log("worker"+cluster.worker.id+"started");
 }

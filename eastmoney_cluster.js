@@ -155,7 +155,6 @@ if(cluster.isMaster){
 						}
 						else
 							blobrecords['url'] = response;
-
 						process.send({chat: "hey master, worker " + cluster.worker.id + " one job for " + m['name'] +" done!",br:blobrecords});
 					});
 					return;
@@ -185,13 +184,12 @@ if(cluster.isMaster){
 		  				else{
 		  					mapArr.push(nowPage);
 		  				}
-	  					nowReqNum--;
 		  			}
 		  			else{
 		  				mapArr.push(nowPage);
-		  				nowReqNum--;
 		  				console.error('Error occur : '+ error);
 		  			}
+  					nowReqNum--;
 			  	});
 			}
 		},100);
