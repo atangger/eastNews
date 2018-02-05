@@ -77,9 +77,6 @@ if(cluster.isMaster){
 		var topDate = Date.parse(nl[0]['Art_CreateTime']);
 		var nl_f = new Array();
 		var pageNum = parseInt(m['pageNum']);
-		while(pageNum >1000)
-			pageNum =  Math.floor(pageNum/2);
-
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
 		var newsUrlList = new Array();
 
