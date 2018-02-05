@@ -128,6 +128,7 @@ if(cluster.isMaster){
 		  				if(!rb['IsSuccess']){
 		  					for(let i = 0; i < rb['Data'].length;i++){
 		  						if(Date.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
+		  							console.log("now the date = " +Date.parse(rb['Data'][i]['Art_CreateTime']) + " and topdate = " + topDate);
 		  							nl_f.push(rb['Data'][i]);
 		  						}
 		  						else{
