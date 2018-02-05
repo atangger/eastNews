@@ -92,6 +92,7 @@ if(cluster.isMaster){
 				nowReqnum++;
 				nowPage = mapArr.shift();
 				if(typeof(nowPage) == 'undefined'){
+					console.log('reqArr is empty!!');
 					clearTimeout(w_interval);
 					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
 						if(error){
