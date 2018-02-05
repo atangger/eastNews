@@ -143,7 +143,7 @@ if(cluster.isMaster){
 		  				mapArr.unshift(nowPage);
 		  				console.error('Error occur : '+ error);
 		  			}
-  					nowReqNum--;
+  					nowReqnum--;
 			  	});
 			}
 		},100);
