@@ -48,7 +48,7 @@ if(cluster.isMaster){
 		  			clearTimeout(interval);
 				}
 			});
-		},1000);
+		},100);
 	});
 } else{
 	process.on('message',(m)=>{
