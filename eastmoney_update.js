@@ -31,7 +31,7 @@ if(cluster.isMaster){
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
 		});
 	}
-	stream.create('masterQueue',(i) =>{
+	stream.create('masterQueue',(item) =>{
 		request(item.url,(error,response,body) =>{
 			if(!error&& response.statusCode == 200){
 				var nl =  JSON.parse(body);
@@ -44,6 +44,9 @@ if(cluster.isMaster){
   					stream.retry('masterQueue',i);
 			}
 		});
+	});
+	sbList.forEach((item) =>{
+		stream.instert('masterQueue',item);
 	});
 	/*
 	sbList.forEach((item) =>{
