@@ -40,8 +40,10 @@ if(cluster.isMaster){
   					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
   					stream.finished('masterQueue');
   				}
-  				else
-  					stream.retry('masterQueue',i);
+  				else{
+  					console.log("get news list for" + item.name " unsuccessfully retry");
+  					stream.retry('masterQueue',item);
+  				}
 			}
 		});
 	});
