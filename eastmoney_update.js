@@ -41,7 +41,7 @@ if(cluster.isMaster){
   					stream.finished('masterQueue');
   				}
   				else{
-  					console.log("get news list for" + item.name " unsuccessfully retry");
+  					console.log("get news list for" + item.name + " unsuccessfully retry");
   					stream.retry('masterQueue',item);
   				}
 			}
