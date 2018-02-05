@@ -46,7 +46,7 @@ if(cluster.isMaster){
 		});
 	});
 	sbList.forEach((item) =>{
-		stream.instert('masterQueue',item);
+		stream.insert('masterQueue',item);
 	});
 	/*
 	sbList.forEach((item) =>{
