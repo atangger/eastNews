@@ -126,7 +126,7 @@ if(cluster.isMaster){
 			  	request(options,function(error,response,body){
 			  		if(!error&& response.statusCode == 200){
 			  			var rb = JSON.parse(body);
-		  				if(rb['IsSuccess'] != null){
+		  				if(!rb['IsSuccess']){
 		  					for(let i = 0; i < rb['Data'].length;i++){
 		  						if(Date.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
 		  							nl_f.push(rb['Data'][i]);

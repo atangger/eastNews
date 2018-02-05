@@ -178,7 +178,7 @@ if(cluster.isMaster){
 			  	request(options,function(error,response,body){
 			  		if(!error&& response.statusCode == 200){
 			  			var rb = JSON.parse(body);
-		  				if(rb['IsSuccess'] != null){
+		  				if(!rb['IsSuccess']){
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
 		  				}
 		  				else{
