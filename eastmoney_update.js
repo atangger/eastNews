@@ -128,7 +128,7 @@ if(cluster.isMaster){
 			  			var rb = JSON.parse(body);
 		  				if(rb['IsSuccess'] != null){
 		  					for(let i = 0; i < rb['Data'].length;i++){
-		  						if(Data.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
+		  						if(Date.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
 		  							nl_f.push(rb['Data'][i]);
 		  						}
 		  						else{
