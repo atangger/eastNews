@@ -85,7 +85,6 @@ if(cluster.isMaster){
 
 		var maxReqnum = 1;
 		var nowReqnum = 0;
-		var fflag = 0;
 		mapArr.shift();
 		var nl_f = new Array();
 		var w_interval = setInterval(function(){
@@ -132,6 +131,7 @@ if(cluster.isMaster){
 		  							nl_f.push(rb['Data'][i]);
 		  						}
 		  						else{
+		  							console.log('hit the newest!!!!');
 		  							mapArr.splice(0,mapArr.length);
 		  						}	
 		  					}
