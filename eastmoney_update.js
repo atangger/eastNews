@@ -37,8 +37,36 @@ if(cluster.isMaster){
 				var nl =  JSON.parse(body);
   				var freeWorker = workerQueue.shift();
   				if(typeof(freeWorker) != 'undefined'){
-  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
-  					stream.finished('masterQueue');
+
+					var params = {
+			        "type": "20",
+			        "pageindex": 1,
+			        "pagesize" : "10",
+			        "keyword": item['name']
+			    	};
+
+					var options = {
+				    url: rurl,
+				    jar:j,
+				    qs: params
+				  	};
+  					request(options,function(err,res,bd){
+  						if(!error&& response.statusCode == 200){
+				  			var rb = JSON.parse(bd);
+			  				if(rb['IsSuccess']){
+			  					var TotalPage = rb['TotalPage'];
+			  					freeWorker.send({name:item.name,pageNum:TotalPage,nl:nl});
+  								stream.finished('masterQueue');
+			  				}
+			  				else{
+			  					stream.retry('masterQueue',item);
+			  				}
+			  			}
+			  			else{
+			  				stream.retry('masterQueue',item);
+			  				console.error('Error occur : '+ error);
+			  			}
+  					});
   				}
   				else{
   					//console.log("get news list for" + item.name + "");

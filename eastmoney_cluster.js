@@ -147,7 +147,6 @@ if(cluster.isMaster){
 					var blobrecords = new Object();
 					blobrecords['id'] = m['id'];
 					blobrecords['name'] = m['name'];
-					blobrecords['pageNum'] = pageNum;
 					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
 						if(error){
 							console.log('Blob: error occur!!!');
