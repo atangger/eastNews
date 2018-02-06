@@ -125,6 +125,7 @@ if(cluster.isMaster){
 					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
 						if(error){
 							console.error('in blob cb error occur!!! for ' + m['name']);
+							console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 							console.error(error);
 						}
 						else{
