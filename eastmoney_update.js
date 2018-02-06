@@ -55,6 +55,7 @@ if(cluster.isMaster){
 				  			var rb = JSON.parse(bd);
 			  				if(rb['IsSuccess']){
 			  					var TotalPage = rb['TotalPage'];
+			  					console.log("now the TotalPage = " + TotalPage);
 			  					freeWorker.send({name:item.name,pageNum:TotalPage,nl:nl});
   								stream.finished('masterQueue');
 			  				}
@@ -103,7 +104,7 @@ if(cluster.isMaster){
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
 		var nl = m['nl'];
 		var topDate = 0;
-		if(nl == null)
+		if(nl.length > 0)
 			topDate = Date.parse(nl[0]['Art_CreateTime']);
 
 		var nl_f = new Array();
