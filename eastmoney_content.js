@@ -9,38 +9,6 @@ const redis = require('./redis.js');
 
 const sha256 = require('js-sha256');
 
-/*
-let inqueueValues = [
-{
-  url: 'http://123.html',
-  fingerprint: '12345'
-},
-{
-  url: 'http://234.html',
-  fingerprint: '23445'
-}
-];
-
-redis.clearAll((err) =>{
-	if(!err)
-		console.log('clear Done');
-});
-
-redis.queue.in('testQueue',JSON.stringify(inqueueValues),(err,res) =>{
-	if(err)
-		console.error('in: error occur');
-	else
-		console.log('in: succeddfully done' + res);
-});
-
-redis.queue.out('testQueue',(err,res) =>{
-	if(err)
-		console.error('out: error occur');
-	else
-		console.log('out: successfully done!' + JSON.parse(res)['fingerprint']);
-});
-
-*/
 var workerQueue = new Array();
 
 var sbList =JSON.parse(fs.readFileSync('bList.json'));

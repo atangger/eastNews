@@ -143,7 +143,7 @@ if(cluster.isMaster){
 					}
 
 					//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
-					console.log("worker " + cluster.worker.id + ": finished one job!!!");
+					console.log("worker " + cluster.worker.id + ": finished one job for " + m['name']);
 					var blobrecords = new Object();
 					blobrecords['id'] = m['id'];
 					blobrecords['name'] = m['name'];
