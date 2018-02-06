@@ -155,14 +155,16 @@ if(cluster.isMaster){
 			  		if(!error&& response.statusCode == 200){
 			  			var rb = JSON.parse(body);
 		  				if(rb['IsSuccess']){
-		  					for(let i = 0; i < rb['Data'].length;i++){
-		  						if(Date.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
-		  							//console.log("now the date = " +Date.parse(rb['Data'][i]['Art_CreateTime']) + " and topdate = " + topDate);
-		  							nl_f.push(rb['Data'][i]);
-		  						}
-		  						else{
-		  							mapArr.splice(0,mapArr.length);
-		  						}	
+		  					if(rb['Data'] != null){
+			  					for(let i = 0; i < rb['Data'].length;i++){
+			  						if(Date.parse(rb['Data'][i]['Art_CreateTime']) > topDate){
+			  							//console.log("now the date = " +Date.parse(rb['Data'][i]['Art_CreateTime']) + " and topdate = " + topDate);
+			  							nl_f.push(rb['Data'][i]);
+			  						}
+			  						else{
+			  							mapArr.splice(0,mapArr.length);
+			  						}	
+			  					}
 		  					}
 		  				}
 		  				else
