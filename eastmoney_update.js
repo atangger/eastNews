@@ -102,7 +102,10 @@ if(cluster.isMaster){
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
 		var nl = m['nl'];
-		var topDate = Date.parse(nl[0]['Art_CreateTime']);
+		var topDate = 0;
+		if(nl.length >0)
+			topDate = Date.parse(nl[0]['Art_CreateTime']);
+
 		var nl_f = new Array();
 		var pageNum = parseInt(m['pageNum']);
 		var mapArr = Array.apply(null, Array(pageNum+1)).map(function (_, i) {return i;});
