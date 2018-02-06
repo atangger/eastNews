@@ -49,6 +49,7 @@ const writeText = (container, blob, text, cb) => {
     for (let i = 0; i < Math.ceil(text.length/blobUnit); i++) {
       slicedText.push(text.slice(i * blobUnit, (i + 1) * blobUnit));
       log.info(`Slice ${i}: ${slicedText[i].length} bytes`);
+      log.info(slicedText[i]);
     }
 
     async.eachSeries(slicedText, (text, cb) => {
