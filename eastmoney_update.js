@@ -123,9 +123,9 @@ if(cluster.isMaster){
 				if(typeof(nowPage) == 'undefined'){
 					clearTimeout(w_interval);
 					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
+						console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 						if(error){
 							console.error('in blob cb error occur!!! for ' + m['name']);
-							console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 							console.error(error);
 						}
 						else{
