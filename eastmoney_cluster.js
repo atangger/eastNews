@@ -147,7 +147,13 @@ if(cluster.isMaster){
 					var blobrecords = new Object();
 					blobrecords['id'] = m['id'];
 					blobrecords['name'] = m['name'];
-					blob.writeText('twjcontainer',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
+					var Readable = require('stream').Readable;
+					var s = new Readable();
+					s.push(JSON.stringify(newsUrlList));
+					s.push(null);
+
+					blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) =>{
+						//console.log('the JSON length = ' + JSON.stringify(newsUrlList).length);
 						if(error){
 							console.log('Blob: error occur!!!');
 							console.log(error);
