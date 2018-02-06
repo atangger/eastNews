@@ -152,7 +152,7 @@ if(cluster.isMaster){
 					s.push(JSON.stringify(newsUrlList));
 					s.push(null);
 
-					blob.writeText('twjcontainertmp',m['id'] + '.json',JSON.stringify(newsUrlList),(error,response) =>{
+					blob.writeStream('twjcontainertmp',m['id'] + '.json',s,(error,response) =>{
 						//console.log('the JSON length = ' + JSON.stringify(newsUrlList).length);
 						if(error){
 							console.log('Blob: error occur!!!');
