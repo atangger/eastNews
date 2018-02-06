@@ -122,7 +122,7 @@ if(cluster.isMaster){
 				nowPage = mapArr.shift();
 				if(typeof(nowPage) == 'undefined'){
 					clearTimeout(w_interval);
-					blob.dump('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
+					blob.writeText('twjcontainer',m['id'] + '.json',JSON.stringify(nl_f.concat(nl)),(error,response) => {
 						console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 						if(error){
 							console.error('in blob cb error occur!!! for ' + m['name']);
