@@ -5,7 +5,7 @@ const fs = require('fs');
 const request = require('request');
 const async = require('async');
 const blob = require('./blob.js');
-const redis = require('./redis.js');
+//const redis = require('./redis.js');
 const stream = require(`./stream`);
 
 const sha256 = require('js-sha256');
@@ -58,7 +58,7 @@ if(cluster.isMaster){
 			request(item['Art_Url'],(error,response,body)=>{
 				if(!error&& response.statusCode == 200){
 					var tmp = item['Art_Url'].split('/');
-					blob.writeText('twjcontainer.html',tmp[tmp.length-1],body,(err,res)=>{
+					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],body,(err,res)=>{
 						if(error){
 							console.error('in blob callback error occur!!! for ' + m['name']);
 							console.error(error);
