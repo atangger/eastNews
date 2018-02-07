@@ -23,14 +23,21 @@ j.setCookie(cookie,url);
 if(cluster.isMaster){
 	console.log('Master: Master is running');
 	// Fork workers
+	var finNum = 0;
 	var workers = new Array(numCPUs);
 	for(let i = 0; i < numCPUs; i ++){
 		workers[i] = cluster.fork();
 		workerQueue.push(workers[i]);
 
 		workers[i].on('message',(m)=>{
+			finNum++;
 			workerQueue.push(workers[i]);
+			console.log("Master: finished job num =" +finNum);
 			console.log("Master: message received " +(i+1) +" chat :" + m['chat']);
+			if(finNum == sbList.length){
+				console.log("Update finished!");
+				process.exit();
+			}
 		});
 	}
 	stream.create('masterQueue',(item) =>{

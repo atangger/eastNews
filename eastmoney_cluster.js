@@ -54,8 +54,6 @@ if(cluster.isMaster){
 		// Fork workers
 		var workers = new Array(numCPUs);
 		var finNum = 0;
-
-
 		for(let i = 0; i < numCPUs; i ++){
 			workers[i] = cluster.fork();
 			workers[i].on('message',(m)=>{
