@@ -127,7 +127,8 @@ if(cluster.isMaster){
 					var s = new Readable();
 					s.push(JSON.stringify(nl_f.concat(nl)));
 					s.push(null);
-					
+					console.log(`mapArr empty!! : worker :${process.pid} + ${(nl_f.concat(nl)).length}`);
+
 					blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) => {
 						console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 						if(error){
