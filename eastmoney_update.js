@@ -1,6 +1,8 @@
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
+//const numCPUs = 1;
+
 const fs = require('fs');
 const request = require('request');
 const async = require('async');
@@ -50,13 +52,14 @@ if(cluster.isMaster){
 				    jar:j,
 				    qs: params
 				  	};
+
   					request(options,function(err,res,bd){
   						if(!error&& response.statusCode == 200){
 				  			var rb = JSON.parse(bd);
 			  				if(rb['IsSuccess']){
 			  					var TotalPage = rb['TotalPage'];
 			  					console.log("now the TotalPage = " + TotalPage);
-			  					freeWorker.send({name:item.name,pageNum:TotalPage,nl:nl});
+			  					freeWorker.send({name:item['name'],id:item['id'],pageNum:TotalPage,nl:nl});
   								stream.finished('masterQueue');
 			  				}
 			  				else{
@@ -116,6 +119,11 @@ if(cluster.isMaster){
 		var nowReqnum = 0;
 		mapArr.shift();
 		var nl_f = new Array();
+		var Readable = require('stream').Readable;
+		var s = new Readable();
+		s.push(JSON.stringify(nl));
+		s.push(null);
+
 		var w_interval = setInterval(function(){
 			if(nowReqnum < maxReqnum){
 				nowReqnum++;
