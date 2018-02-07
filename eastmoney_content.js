@@ -1,7 +1,6 @@
 const cluster = require('cluster');
 const http = require('http');
-const numCPUs =1;
-//const numCPUs = require('os').cpus().length;
+const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const request = require('request');
 const async = require('async');
@@ -52,13 +51,14 @@ if(cluster.isMaster){
 	});
 
 } else{
+	let wFinCnt = 0; 
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
-		var wFinCnt = 0; 
+		wFinCnt = 0; 
 		stream.create('workerQueue',(item) => {
 			request(item['Art_Url'],(error,response,body)=>{
 				if(!error&& response.statusCode == 200){
-					var tmp = item['Art_Url'].split('/');
+					let tmp = item['Art_Url'].split('/');
 					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],body,(err,res)=>{
 						if(error){
 							console.error('in blob callback error occur!!! for ' + m['name']);
@@ -68,8 +68,9 @@ if(cluster.isMaster){
 						else{
 							//console.log(response);
 							wFinCnt++;
-							console.log("worker : finishedNum = " + wFinCnt);
+							//console.log("worker : finishedNum = " + wFinCnt);
 							if(wFinCnt == m['nl'].length){
+								//wFinCnt = 0;
 								console.log("worker " + cluster.worker.id + ": finished one job!!!");
 								process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 							}
