@@ -1,6 +1,7 @@
 const cluster = require('cluster');
 const http = require('http');
-const numCPUs = require('os').cpus().length;
+const numCPUs =1;
+//const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const request = require('request');
 const async = require('async');
@@ -67,10 +68,10 @@ if(cluster.isMaster){
 						else{
 							//console.log(response);
 							wFinCnt++;
+							console.log("worker : finishedNum = " + wFinCnt);
 							if(wFinCnt == m['nl'].length){
 								console.log("worker " + cluster.worker.id + ": finished one job!!!");
 								process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
-
 							}
 							stream.finished('workerQueue');
 						}
