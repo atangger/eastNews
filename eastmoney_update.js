@@ -117,7 +117,7 @@ if(cluster.isMaster){
 		mapArr.shift();
 		var nl_f = new Array();
 		var w_interval = setInterval(function(){
-			if(nowReqnum <maxReqnum){
+			if(nowReqnum < maxReqnum){
 				nowReqnum++;
 				nowPage = mapArr.shift();
 				if(typeof(nowPage) == 'undefined'){
@@ -141,6 +141,7 @@ if(cluster.isMaster){
 							process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 						}
 					});
+					return;
 				}
 				var params = {
 		        "type": "20",
