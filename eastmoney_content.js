@@ -53,7 +53,7 @@ if(cluster.isMaster){
 
 } else{
 	process.on('message',(m)=>{
-		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
+		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
 		var wFinCnt = 0; 
 		stream.create('workerQueue',(item) => {
 			request(item['Art_Url'],(error,response,body)=>{
