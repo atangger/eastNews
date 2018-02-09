@@ -83,7 +83,7 @@ if(cluster.isMaster){
 							hto['Art_Blob'] = res;
 							nlc.push(hto);
 							if(wFinCnt%100 == 0)
-								console.log("worker : finishedNum = " + wFinCnt);
+								console.log(`worker ${cluster.worker.id} : finishedNum =  ${wFinCnt}`);
 							if(wFinCnt == m['nl'].length){
 								//wFinCnt = 0;
 								var Readable = require('stream').Readable;
