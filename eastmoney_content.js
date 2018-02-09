@@ -95,10 +95,11 @@ if(cluster.isMaster){
 										console.error('in blob cb error occur!!! for ' + m['name']);
 										console.error(error);
 									}
+									else{
+										console.log("worker " + cluster.worker.id + ": finished one job!!!");
+										process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
+									}
 								});
-
-								console.log("worker " + cluster.worker.id + ": finished one job!!!");
-								process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 							}
 							stream.finished('workerQueue');
 						}
