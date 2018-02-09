@@ -7,6 +7,8 @@ const async = require('async');
 const blob = require('./blob.js');
 //const redis = require('./redis.js');
 const stream = require(`./stream`);
+const crypto = require('crypto');
+const cheerio = require('cheerio');
 
 const sha256 = require('js-sha256');
 
@@ -33,7 +35,7 @@ if(cluster.isMaster){
 				var nl =  JSON.parse(body);
   				var freeWorker = workerQueue.shift();
   				if(typeof(freeWorker) != 'undefined'){
-  					freeWorker.send({name:item['name'],nl:nl});
+  					freeWorker.send({name:item['name'],id:item['id'],nl:nl});
   					stream.finished('masterQueue');
   				}
   				else
@@ -54,12 +56,21 @@ if(cluster.isMaster){
 	let wFinCnt = 0; 
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
-		wFinCnt = 0; 
+		wFinCnt = 0;
+		let nlc = new Array();
+
 		stream.create('workerQueue',(item) => {
 			request(item['Art_Url'],(error,response,body)=>{
 				if(!error&& response.statusCode == 200){
 					let tmp = item['Art_Url'].split('/');
-					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],body,(err,res)=>{
+					let cRecord = new Object();
+					let hash = crypto.createHash('sha256');
+					hash.update(body);
+
+					cRecord['sha'] = hash.digest(hex);
+					cRecord['rawHtml'] = body;
+
+					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],JSON.stringify(cRecord),(err,res)=>{
 						if(error){
 							console.error('in blob callback error occur!!! for ' + m['name']);
 							console.error(error);
@@ -68,9 +79,25 @@ if(cluster.isMaster){
 						else{
 							//console.log(response);
 							wFinCnt++;
+							let hto = item;
+							hto['Art_Blob'] = res;
+							nlc.push(hto);
 							//console.log("worker : finishedNum = " + wFinCnt);
 							if(wFinCnt == m['nl'].length){
 								//wFinCnt = 0;
+								var Readable = require('stream').Readable;
+								var s = new Readable();
+								s.push(JSON.stringify(nlc));
+								s.push(null);
+
+								blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) => {
+									console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
+									if(error){
+										console.error('in blob cb error occur!!! for ' + m['name']);
+										console.error(error);
+									}
+								});
+
 								console.log("worker " + cluster.worker.id + ": finished one job!!!");
 								process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 							}
