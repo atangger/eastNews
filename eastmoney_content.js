@@ -91,7 +91,6 @@ if(cluster.isMaster){
 								s.push(null);
 
 								blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) => {
-									console.log('nl : ' + nl.length +" nl_f : " + nl_f.length);
 									if(error){
 										console.error('in blob cb error occur!!! for ' + m['name']);
 										console.error(error);
