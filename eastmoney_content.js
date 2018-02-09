@@ -67,7 +67,7 @@ if(cluster.isMaster){
 					let hash = crypto.createHash('sha256');
 					hash.update(body);
 
-					cRecord['sha'] = hash.digest(hex);
+					cRecord['sha'] = hash.digest('hex');
 					cRecord['rawHtml'] = body;
 
 					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],JSON.stringify(cRecord),(err,res)=>{
