@@ -114,8 +114,8 @@ if(cluster.isMaster){
 					stream.retry('workerQueue'+ m['id'],item);
 			});
 		});
-
-		m['nl'].forEach((item) =>{
+		let tmpCnt = 0;
+		m['nl'].splice(0,300).forEach((item) =>{
 			stream.insert('workerQueue'+ m['id'],item);
 		});
 	});
