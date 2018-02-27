@@ -58,7 +58,7 @@ if(cluster.isMaster){
 } else{
 	let wFinCnt = 0; 
 	process.on('message',(m)=>{
-		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
+		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum = " + m['nl'].length);
 		wFinCnt = 0;
 		let nlc = new Array();
 		stream.create('workerQueue' + m['id'],(item) => {
@@ -84,7 +84,8 @@ if(cluster.isMaster){
 							let hto = item;
 							hto['Art_Blob'] = res;
 							nlc.push(hto);
-							if(wFinCnt%100 == 0){
+
+							if(wFinCnt%10 == 0){
 								console.log(`worker ${cluster.worker.id} now interval : ${stream._streams['workerQueue' + m['id']]['interval']}`);
 								console.log(`worker ${cluster.worker.id} : finishedNum =  ${wFinCnt}`);
 							}
@@ -115,7 +116,7 @@ if(cluster.isMaster){
 			});
 		});
 		let tmpCnt = 0;
-		m['nl'].splice(0,300).forEach((item) =>{
+		m['nl'].forEach((item) =>{
 			stream.insert('workerQueue'+ m['id'],item);
 		});
 	});

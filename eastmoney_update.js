@@ -89,26 +89,6 @@ if(cluster.isMaster){
 	sbList.forEach((item) =>{
 		stream.insert('masterQueue',item);
 	});
-	/*
-	sbList.forEach((item) =>{
-		if(item.pageNum == 0 ) return;
-		var interval = setInterval(function(){
-			request(item.url,(error,response,body) =>{
-				if(!error&& response.statusCode == 200){
-					var nl =  JSON.parse(body);
-		  			var intl = setInterval(function(){
-		  				var freeWorker = workerQueue.shift();
-		  				if(typeof(freeWorker) != 'undefined'){
-		  					freeWorker.send({name:item.name,pageNum:item.pageNum,nl:nl});
-		  					clearTimeout(intl);
-		  				}
-		  			},100);
-		  			clearTimeout(interval);
-				}
-			});
-		},100);
-	});
-	*/
 } else{
 	process.on('message',(m)=>{
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]);
