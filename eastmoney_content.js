@@ -116,7 +116,7 @@ if(cluster.isMaster){
 			});
 		});
 		let tmpCnt = 0;
-		m['nl'].forEach((item) =>{
+		m['nl'].splice(0,300).forEach((item) =>{
 			stream.insert('workerQueue'+ m['id'],item);
 		});
 	});
