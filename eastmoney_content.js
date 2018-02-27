@@ -111,7 +111,7 @@ if(cluster.isMaster){
 					});
 				}
 				else
-					stream.retry('workerQueue'+ m['id'],item);
+					//stream.retry('workerQueue'+ m['id'],item);
 			});
 		});
 		let tmpCnt = 0;
