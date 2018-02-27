@@ -60,7 +60,7 @@ if(cluster.isMaster){
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
 		wFinCnt = 0;
 		let nlc = new Array();
-
+		stream.clear('workerQueue');
 		stream.create('workerQueue',(item) => {
 			request(item['Art_Url'],(error,response,body)=>{
 				if(!error&& response.statusCode == 200){
@@ -100,7 +100,6 @@ if(cluster.isMaster){
 									}
 									else{
 										console.log("worker " + cluster.worker.id + ": finished one job!!!");
-										stream.clear('workerQueue');
 										process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 									}
 								});
