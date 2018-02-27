@@ -110,7 +110,7 @@ if(cluster.isMaster){
 						}
 					});
 				}
-				else
+				//else
 					//stream.retry('workerQueue'+ m['id'],item);
 			});
 		});
