@@ -85,7 +85,7 @@ if(cluster.isMaster){
 							hto['Art_Blob'] = res;
 							nlc.push(hto);
 
-							if(wFinCnt%10 == 0){
+							if(wFinCnt%100 == 0){
 								console.log(`worker ${cluster.worker.id} now interval : ${stream._streams['workerQueue' + m['id']]['interval']}`);
 								console.log(`worker ${cluster.worker.id} : finishedNum =  ${wFinCnt}`);
 							}
