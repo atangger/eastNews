@@ -100,6 +100,7 @@ if(cluster.isMaster){
 									}
 									else{
 										console.log("worker " + cluster.worker.id + ": finished one job!!!");
+										stream.clear('workerQueue');
 										process.send({chat: "hey master, worker" + cluster.worker.id + "one job done! for " + m['name']});
 									}
 								});
