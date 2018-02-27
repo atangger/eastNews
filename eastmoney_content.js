@@ -38,8 +38,10 @@ if(cluster.isMaster){
   					freeWorker.send({name:item['name'],id:item['id'],nl:nl});
   					stream.finished('masterQueue');
   				}
-  				else
-  					stream.retry('masterQueue',item);
+  				else{
+  					stream.finished('masterQueue');
+  					stream.insert('masterQueue',item);
+  				}
 			}
 			else{
 				stream.retry('masterQueue',item);
