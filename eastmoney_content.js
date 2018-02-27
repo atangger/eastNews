@@ -60,8 +60,7 @@ if(cluster.isMaster){
 		console.log("worker" + cluster.worker.id+ ": received msg : " + m["name"]+ "pagesnum =" + m['nl'].length);
 		wFinCnt = 0;
 		let nlc = new Array();
-		stream.clear('workerQueue');
-		stream.create('workerQueue',(item) => {
+		stream.create('workerQueue' + m['id'],(item) => {
 			request(item['Art_Url'],(error,response,body)=>{
 				if(!error&& response.statusCode == 200){
 					let tmp = item['Art_Url'].split('/');
@@ -76,7 +75,7 @@ if(cluster.isMaster){
 						if(error){
 							console.error('in blob callback error occur!!! for ' + m['name']);
 							console.error(error);
-							stream.retry('workerQueue',item);
+							stream.retry('workerQueue' + m['id'],item);
 						}
 						else{
 							//console.log(response);
@@ -104,17 +103,17 @@ if(cluster.isMaster){
 									}
 								});
 							}
-							stream.finished('workerQueue');
+							stream.finished('workerQueue' + m['id']);
 						}
 					});
 				}
 				else
-					stream.retry('workerQueue',item);
+					stream.retry('workerQueue'+ m['id'],item);
 			});
 		});
 
 		m['nl'].forEach((item) =>{
-			stream.insert('workerQueue',item);
+			stream.insert('workerQueue'+ m['id'],item);
 		});
 	});
 	console.log("worker"+cluster.worker.id+"started ");
