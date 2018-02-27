@@ -35,7 +35,8 @@ if(cluster.isMaster){
 				var nl =  JSON.parse(body);
   				var freeWorker = workerQueue.shift();
   				if(typeof(freeWorker) != 'undefined'){
-  					freeWorker.send({name:item['name'],id:item['id'],nl:nl});
+  					if(nl.length != 0)
+  						freeWorker.send({name:item['name'],id:item['id'],nl:nl});
   					stream.finished('masterQueue');
   				}
   				else{
@@ -87,7 +88,7 @@ if(cluster.isMaster){
 								console.log(`worker ${cluster.worker.id} now interval : ${stream._streams['workerQueue' + m['id']]['interval']}`);
 								console.log(`worker ${cluster.worker.id} : finishedNum =  ${wFinCnt}`);
 							}
-							if(wFinCnt == m['nl'].length){
+							if(wFinCnt >= 300){ 
 								//wFinCnt = 0;
 								var Readable = require('stream').Readable;
 								var s = new Readable();
