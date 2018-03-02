@@ -101,6 +101,7 @@ if(cluster.isMaster){
 	  				if(typeof(freeWorker) != 'undefined'){
 	  					console.log('master send message pageNum = ' + msg['pageNum']);
 	  					freeWorker.send(msg);
+	  					stream.finished('masterQueue');
 	  				}
 	  				else{
 	  					stream.retry('masterQueue',item);
