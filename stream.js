@@ -21,7 +21,7 @@ const Stream = {
       this._streams[name]['setInterval'] = setInterval(this._interval(name), this._streams[name]['interval']);
 
       this._streams[name]['updateInterval'] = setInterval(() => {
-        log.info(`new quque: ${this._streams[name]['new']}\nretry queue: ${this._streams[name]['retry']}\nmax concurrency: ${this._streams[name]['maxConcurrency']}\ncurrent concurrency: ${this._streams[name]['curConcurrency']}\ninterval: ${this._streams[name]['interval']}`);
+        //log.info(`new quque: ${this._streams[name]['new']}\nretry queue: ${this._streams[name]['retry']}\nmax concurrency: ${this._streams[name]['maxConcurrency']}\ncurrent concurrency: ${this._streams[name]['curConcurrency']}\ninterval: ${this._streams[name]['interval']}`);
         let newLength = this._streams[name]['new'].length;
         let retryLength = this._streams[name]['retry'].length;
 

@@ -84,9 +84,8 @@ if(cluster.isMaster){
 		    jar:j,
 		    qs: params
 		  	};
-
+			console.log(`queuelength = ${stream._streams['masterQueue']['new'].length} retrylength = ${stream._streams['masterQueue']['retry'].length} interval = ${stream._streams['masterQueue']['interval']}`)
 			request(options,(error,response,body)=>{
-				console.log(`queuelength = ${stream._streams['masterQueue']['new'].length} retrylength = ${stream._streams['masterQueue']['retry'].length} interval = ${stream._streams['masterQueue']['interval']}`)
 				if(!error&& response.statusCode == 200){
 		  			var msg = new Object();
 		  			msg['name'] = item['name'];
