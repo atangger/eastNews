@@ -84,9 +84,9 @@ if(cluster.isMaster){
 		    jar:j,
 		    qs: params
 		  	};
-			console.log(`queuelength = ${stream._streams['masterQueue']['new'].length} 
-				retrylength = ${stream._streams['masterQueue']['retry'].length} 
-				curConcurrency= ${stream._streams['masterQueue']['curConcurrency']} 
+			console.log(`queuelength = ${stream._streams['masterQueue']['new'].length}\ 
+				retrylength = ${stream._streams['masterQueue']['retry'].length}\ 
+				curConcurrency= ${stream._streams['masterQueue']['curConcurrency']}\ 
 				maxConcurrency= ${stream._streams['masterQueue']['maxConcurrency']}`);
 			
 			request(options,(error,response,body)=>{
