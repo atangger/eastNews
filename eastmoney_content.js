@@ -73,9 +73,9 @@ if(cluster.isMaster){
 					cRecord['rawHtml'] = body;
 
 					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],JSON.stringify(cRecord),(err,res)=>{
-						if(error){
+						if(err){
 							console.error('in blob callback error occur!!! for ' + m['name']);
-							console.error(error);
+							console.error(err);
 							stream.retry('workerQueue' + m['id'],item);
 						}
 						else{
@@ -90,16 +90,17 @@ if(cluster.isMaster){
 								console.log(`worker ${cluster.worker.id} : finishedNum =  ${wFinCnt}`);
 							}
 							if(wFinCnt >= 300){ 
+								console.log("wFinCnt = " + wFinCnt);
 								//wFinCnt = 0;
 								var Readable = require('stream').Readable;
 								var s = new Readable();
 								s.push(JSON.stringify(nlc));
 								s.push(null);
 
-								blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) => {
-									if(error){
+								blob.writeStream('twjcontainer',m['id'] + '.json',s,(errb,resb) => {
+									if(errb){
 										console.error('in blob cb error occur!!! for ' + m['name']);
-										console.error(error);
+										console.error(errb);
 									}
 									else{
 										console.log("worker " + cluster.worker.id + ": finished one job!!!");

@@ -3,8 +3,8 @@ const http = require('http');
 const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const request = require('request');
-const async = require('async');
 const blob = require('./blob.js');
+const stream = require(`./stream`);
 
 var workerQueue = new Array();
 var bList = new Array();
@@ -71,6 +71,54 @@ if(cluster.isMaster){
 			workerQueue.push(workers[i]);
 		}
 
+		stream.create('masterQueue',(item) =>{
+			var params = {
+	        "type": "20",
+	        "pageindex": 1,
+	        "pagesize" : "10",
+	        "keyword": item['name']
+	    	};
+
+			var options = {
+		    url: rurl,
+		    jar:j,
+		    qs: params
+		  	};
+
+			request(options,(error,response,body)=>{
+				if(!error&& response.statusCode == 200){
+		  			var msg = new Object();
+		  			msg['name'] = item['name'];
+		  			msg['id'] = item['id'];
+		  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
+		  			if(!JSON.parse(body)['IsSuccess'])
+		  			{
+		  				console.log("DEBUG<<<<Request for firstPage failed. Try again.>>>>");
+		  				stream.retry('masterQueue',item);
+		  				return;
+		  			}
+	  				var freeWorker = workerQueue.shift();
+	  				if(typeof(freeWorker) != 'undefined'){
+	  					console.log('master send message pageNum = ' + msg['pageNum']);
+	  					freeWorker.send(msg);
+	  				}
+	  				else{
+	  					stream.retry('masterQueue',item);
+	  				}
+				}
+				else{
+					stream.retry('masterQueue',item);
+					console.error('Unable to get the first page');
+				}
+			});
+		});
+
+		sListWhole.forEach((item) =>{
+			stream.insert('masterQueue',item);
+		});
+
+
+		/*
 		//var debugcnt = 300;
 		sListWhole.forEach(function(item){
 			//debugcnt--;
@@ -88,6 +136,7 @@ if(cluster.isMaster){
 		    jar:j,
 		    qs: params
 		  	};
+
 		  	var interval = setInterval(function(){
 			  	request(options,function(error,response,body){
 			  		//console.log("Master: get response, statusCode = " + response.statusCode);
@@ -114,7 +163,9 @@ if(cluster.isMaster){
 			  	});
 		  	},1000)
 
+
 		});
+		*/
 
 	});
 } else{
