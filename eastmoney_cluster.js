@@ -86,6 +86,7 @@ if(cluster.isMaster){
 		  	};
 
 			request(options,(error,response,body)=>{
+				console.log(`queuelength = ${stream.streams['masterQueue'][new]} retrylength = ${stream.streams['masterQueue'][retry]} interval = ${stream.streams['masterQueue'][interval]}`)
 				if(!error&& response.statusCode == 200){
 		  			var msg = new Object();
 		  			msg['name'] = item['name'];
