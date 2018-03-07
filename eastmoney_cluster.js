@@ -196,6 +196,8 @@ if(cluster.isMaster){
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
+						else
+							console.log("null!!!!!");
 					}
 
 					//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
