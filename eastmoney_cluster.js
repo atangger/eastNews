@@ -237,19 +237,20 @@ if(cluster.isMaster){
 			    	connection:'keep-alive'
 			    }
 			  	};
-			  	console.log('<<<<<<<sending request>>>>>>>');
 			  	request(options,function(error,response,body){
 			  		if(!error&& response.statusCode == 200){
 			  			var rb = JSON.parse(body);
 		  				if(rb['IsSuccess']){
-		  					console.log('<<<<<<<great>>>>>>>');
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
-		  					if(unorderList[nowPage] == null)
+		  					if(unorderList[nowPage] == null){
+		  						console.log('<<<<<NULL>>>>>>>');
+		  						console.log('rb = ' + body);
+
 		  						debugnullNum ++;
+		  					}
 		  					debugNum++;
 		  				}
 		  				else{
-		  					console.error('<<<<<<<RETRY :>>>>>>>');
 		  					mapArr.push(nowPage);
 		  				}
 		  			}
