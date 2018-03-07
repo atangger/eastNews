@@ -115,7 +115,8 @@ if(cluster.isMaster){
 		});
 
 		sListWhole.forEach((item) =>{
-			stream.insert('masterQueue',item);
+			if(item['name'] == '同辉100A')
+				stream.insert('masterQueue',item);
 		});
 
 
