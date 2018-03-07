@@ -244,6 +244,7 @@ if(cluster.isMaster){
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
 		  					if(unorderList[nowPage] == null){
 		  						console.log('<<<<<NULL>>>>>>>');
+		  						console.log('nowPage = ' + nowPage);
 		  						console.log('rb = ' + body);
 
 		  						debugnullNum ++;
