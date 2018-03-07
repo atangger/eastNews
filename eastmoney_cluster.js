@@ -256,7 +256,7 @@ if(cluster.isMaster){
   					nowReqNum--;
 			  	});
 			}
-		},100);
+		},10);
 	});
 	console.log(`worker ${cluster.worker.id} started`);
 }
