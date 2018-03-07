@@ -190,7 +190,7 @@ if(cluster.isMaster){
 					nowReqNum--;
 					return;
 				}
-				if(typeof(nowPage) == 'undefined' && nowReqNum == 0){
+				if(typeof(nowPage) == 'undefined' && nowReqNum == 1){
 					clearTimeout(w_interval);
 
 					for(let i = 1; i <= pageNum;i++ ){
