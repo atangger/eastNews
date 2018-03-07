@@ -180,6 +180,7 @@ if(cluster.isMaster){
 		var maxReqNum = 60;
 		var nowReqNum = 0;
 		var debugNum =0;
+		var debugnullNum = 0;
 		mapArr.shift();
 		var w_interval = setInterval(function(){
 			if(nowReqNum < maxReqNum){
@@ -192,7 +193,7 @@ if(cluster.isMaster){
 				}
 				if(typeof(nowPage) == 'undefined' && nowReqNum == 1){
 					clearTimeout(w_interval);
-					console.log('debug num = ' + debugNum);
+					console.log('debug num = ' + debugNum +'debugnullNum = ' + debugnullNum);
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
@@ -243,6 +244,8 @@ if(cluster.isMaster){
 		  				if(rb['IsSuccess']){
 		  					console.log('<<<<<<<great>>>>>>>');
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
+		  					if(unorderList[nowPage] == null)
+		  						debugnullNum ++;
 		  					debugNum++;
 		  				}
 		  				else{
