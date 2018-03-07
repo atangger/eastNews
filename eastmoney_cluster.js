@@ -179,7 +179,7 @@ if(cluster.isMaster){
 		var unorderList = new Array();
 		var maxReqNum = 60;
 		var nowReqNum = 0;
-
+		var debugNum =0;
 		mapArr.shift();
 		var w_interval = setInterval(function(){
 			if(nowReqNum < maxReqNum){
@@ -192,12 +192,10 @@ if(cluster.isMaster){
 				}
 				if(typeof(nowPage) == 'undefined' && nowReqNum == 1){
 					clearTimeout(w_interval);
-
+					console.log('debug num = ' + debugNum);
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
-						else
-							console.log("null!!!!!");
 					}
 
 					//fs.writeFileSync("./urlLists/" + m['id'] + ".json",JSON.stringify(newsUrlList));
@@ -245,6 +243,7 @@ if(cluster.isMaster){
 		  				if(rb['IsSuccess']){
 		  					console.log('<<<<<<<great>>>>>>>');
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
+		  					debugNum++;
 		  				}
 		  				else{
 		  					console.error('<<<<<<<RETRY :>>>>>>>');
