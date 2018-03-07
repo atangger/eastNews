@@ -184,6 +184,7 @@ if(cluster.isMaster){
 		var w_interval = setInterval(function(){
 			if(nowReqNum < maxReqNum){
 				nowReqNum++;
+				console.log(`nowReqNum = ${nowReqNum}`);
 				var nowPage = mapArr.shift();	
 				if(typeof(nowPage) == 'undefined' && nowReqNum == 0){
 					clearTimeout(w_interval);
