@@ -239,6 +239,7 @@ if(cluster.isMaster){
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
 		  				}
 		  				else{
+		  					console.error('<<<<<<<RETRY :>>>>>>>');
 		  					mapArr.push(nowPage);
 		  				}
 		  			}
