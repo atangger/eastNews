@@ -190,7 +190,6 @@ if(cluster.isMaster){
 				}
 				if(typeof(nowPage) == 'undefined' && nowReqNum == 1){
 					clearTimeout(w_interval);
-					console.log('debug num = ' + debugNum +'debugnullNum = ' + debugnullNum);
 					for(let i = 1; i <= pageNum;i++ ){
 						if(unorderList[i] != null)
 							newsUrlList = newsUrlList.concat(unorderList[i]);
