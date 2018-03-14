@@ -209,7 +209,7 @@ if(cluster.isMaster){
 					s.push(JSON.stringify(newsUrlList));
 					s.push(null);
 
-					blob.writeStream('twjcontainer',m['id'] + '.json',s,(error,response) =>{
+					blob.writeStream('twjcontainerSNlist','eastmoney/m['id'] + '.json',s,(error,response) =>{
 						//console.log('the JSON length = ' + JSON.stringify(newsUrlList).length);
 						if(error){
 							console.log('Blob: error occur!!!');
