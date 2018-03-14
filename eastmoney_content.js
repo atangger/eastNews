@@ -1,3 +1,4 @@
+
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
@@ -11,6 +12,8 @@ const crypto = require('crypto');
 const cheerio = require('cheerio');
 const colors = require('colors'); 
 const sha256 = require('js-sha256');
+const redis = require('../lib/redis');
+
 
 let col=['bgGreen','bgRed','bgYellow','bgBlue','america','bgMagenta','bgCyan','bgWhite'];
 
@@ -156,6 +159,12 @@ if(cluster.isMaster){
 						else{
 							//console.log(response);
 							//console.log(`position2: worker ${cluster.worker.id} : finishedNum =  ${wFinCnt} olength = ${tmpList.length} errorcnt = ${errorcnt} retrySize = ${stream._streams['workerQueue' + m['id']]['retry'].length } curConcurrency = ${stream._streams['workerQueue' + m['id']]['curConcurrency']} `);
+							let inserItems = new Array();
+							inserItems.push(res);
+							redis.queue.in('qHtmlBlobUrl',inserItems,(err,res)=>{
+								if(err)
+									console.log('redis queue insert unsuccessfully');
+							});
 							wFinCnt++;
 							let hto = item; 	
 							hto['Art_Blob'] = res;
