@@ -178,8 +178,6 @@ if(cluster.isMaster){
 		var unorderList = new Array();
 		var maxReqNum = 60;
 		var nowReqNum = 0;
-		var debugNum =0;
-		var debugnullNum = 0;
 		mapArr.shift();
 		var w_interval = setInterval(function(){
 			if(nowReqNum < maxReqNum){
@@ -241,14 +239,6 @@ if(cluster.isMaster){
 			  			var rb = JSON.parse(body);
 		  				if(rb['IsSuccess']){
 		  					unorderList[nowPage] = JSON.parse(body)['Data'];
-		  					if(unorderList[nowPage] == null){
-		  						console.log('<<<<<NULL>>>>>>>');
-		  						console.log('nowPage = ' + nowPage);
-		  						console.log('rb = ' + body);
-
-		  						debugnullNum ++;
-		  					}
-		  					debugNum++;
 		  				}
 		  				else{
 		  					mapArr.push(nowPage);
