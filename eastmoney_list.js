@@ -9,14 +9,6 @@ const stream = require(`./stream`);
 var workerQueue = new Array();
 var bList = new Array();
 
-var j = request.jar();
-var url = "http://so.eastmoney.com/Web/GetSearchList?type=20&pageindex=1&pagesize=10&keyword=%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C";
-var rurl = "http://so.eastmoney.com/Web/GetSearchList";
-
-var cookie = request.cookie("emstat_bc_emcount=7130645612331980324; st_pvi=84819361064589; emstat_ss_emcount=190_1513101205_2585311130; st_si=92133183274583; emshistory=%5B%22%E6%B5%A6%E5%8F%91%E9%93%B6%E8%A1%8C%22%5D; HAList=a-sh-600000-%u6D66%u53D1%u94F6%u884C%2Ca-sz-300231-%u94F6%u4FE1%u79D1%u6280; em_hq_fls=js; qgqp_b_id=922b4f747742667eaf846dcbe643fe89");
-var cookie2 = request.cookie("emstat_bc_emcount=7130645612331980324; st_pvi=84819361064589; emstat_ss_emcount=190_1513101205_2585311130; st_si=20587844746725")
-j.setCookie(cookie,url);
-
 
 if(cluster.isMaster){
 
@@ -117,57 +109,6 @@ if(cluster.isMaster){
 		sListWhole.forEach((item) =>{
 				stream.insert('masterQueue',item);
 		});
-
-
-		/*
-		//var debugcnt = 300;
-		sListWhole.forEach(function(item){
-			//debugcnt--;
-			//if(debugcnt<0) return;
-
-			var params = {
-	        "type": "20",
-	        "pageindex": 1,
-	        "pagesize" : "10",
-	        "keyword": item['name']
-	    	};
-
-			var options = {
-		    url: rurl,
-		    jar:j,
-		    qs: params
-		  	};
-
-		  	var interval = setInterval(function(){
-			  	request(options,function(error,response,body){
-			  		//console.log("Master: get response, statusCode = " + response.statusCode);
-			  		if(!error&& response.statusCode == 200){
-			  			var msg = new Object();
-			  			msg['name'] = item['name'];
-			  			msg['id'] = item['id'];
-			  			msg['pageNum'] = JSON.parse(body)['TotalPage'];
-			  			if(!JSON.parse(body)['IsSuccess'])
-			  			{
-			  				console.log("DEBUG<<<<Request for firstPage failed. Try again.>>>>")
-			  				return;
-			  			}
-			  			clearTimeout(interval);
-			  			var intl = setInterval(function(){
-			  				var freeWorker = workerQueue.shift();
-			  				if(typeof(freeWorker) != 'undefined'){
-			  					console.log('master send message pageNum = ' + msg['pageNum']);
-			  					freeWorker.send(msg);
-			  					clearTimeout(intl);
-			  				}
-			  			},100);
-			  		}
-			  	});
-		  	},1000)
-
-
-		});
-		*/
-
 	});
 } else{
 	process.on('message',(m)=>{
