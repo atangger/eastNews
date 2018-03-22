@@ -8,7 +8,12 @@ const stream = require(`./stream`);
 const config = require(`./eastnews_config.js`);
 var workerQueue = new Array();
 var bList = new Array();
+
+var j = request.jar();
 var rurl = config.rurl;
+
+var cookie = request.cookie(config.cookie);
+j.setCookie(cookie,rurl);
 
 
 if(cluster.isMaster){
