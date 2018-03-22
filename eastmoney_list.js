@@ -5,12 +5,10 @@ const fs = require('fs');
 const request = require('request');
 const blob = require('./blob.js');
 const stream = require(`./stream`);
-const config = require('./eastnews_config.js');
-
-
-
+const config = require(`./eastnews_config.js`);
 var workerQueue = new Array();
 var bList = new Array();
+var rurl = config.rurl;
 
 
 if(cluster.isMaster){
@@ -149,7 +147,7 @@ if(cluster.isMaster){
 					s.push(JSON.stringify(newsUrlList));
 					s.push(null);
 
-					blob.writeStream(config.blob_container,"eastmoney/"+m['id'] + '.json',s,(error,response) =>{
+					blob.writeStream('twjcontainersnlist',"eastmoney/"+m['id'] + '.json',s,(error,response) =>{
 						//console.log('the JSON length = ' + JSON.stringify(newsUrlList).length);
 						if(error){
 							console.log('Blob: error occur!!!');
