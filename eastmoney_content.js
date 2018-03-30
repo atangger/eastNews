@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 const colors = require('colors'); 
 const sha256 = require('js-sha256');
 const redis = require('../lib/redis');
-
+const config = require(`./eastnews_config.js`);
 
 let col=['bgGreen','bgRed','bgYellow','bgBlue','america','bgMagenta','bgCyan','bgWhite'];
 
@@ -112,7 +112,7 @@ if(cluster.isMaster){
 					cRecord['sha'] = hash.digest('hex');
 					cRecord['rawHtml'] = body;
 
-					blob.writeText('twjcontainerhtml',tmp[tmp.length-1],JSON.stringify(cRecord),(err,res)=>{
+					blob.writeText(config.blob_container,'eastmoney/html/'+tmp[tmp.length-1],JSON.stringify(cRecord),(err,res)=>{
 						if(err){
 							console.error(`in blob callback error occur!!! for worker ${cluster.worker.id}`[col[cluster.worker.id-1]]);
 							console.error(JSON.stringify(err)[col[cluster.worker.id-1]]);
@@ -137,7 +137,7 @@ if(cluster.isMaster){
 										s.push(JSON.stringify(nlc));
 										s.push(null);
 
-										blob.writeStream('twjcontainerrrr',m['id'] + '.json',s,(errb,resb) => {
+										blob.writeStream(config.blob_container,'eastmoney/list/' + m['id'] + '.json',s,(errb,resb) => {
 											if(errb){
 												console.error(`in blob cb error occur!!! for  ${m['name']}`[col[cluster.worker.id-1]]);
 												//console.error(JSON.stringify(errb)[col[cluster.worker.id-1]]);
@@ -180,7 +180,7 @@ if(cluster.isMaster){
 								s.push(JSON.stringify(nlc));
 								s.push(null);
 
-								blob.writeStream('twjcontainerrrr',m['id'] + '.json',s,(errb,resb) => {
+								blob.writeStream(config.blob_container,'eastmoney/list/'+m['id'] + '.json',s,(errb,resb) => {
 									if(errb){
 										console.error(`in blob cb error occur!!! for  ${m['name']}`[col[cluster.worker.id-1]]);
 										//console.error(JSON.stringify(errb)[col[cluster.worker.id-1]]);
@@ -237,7 +237,7 @@ if(cluster.isMaster){
 								s.push(JSON.stringify(nlc));
 								s.push(null);
 
-								blob.writeStream('twjcontainerrrr',m['id'] + '.json',s,(errb,resb) => {
+								blob.writeStream(config.blob_container,'eastmoney/list/' +m['id'] + '.json',s,(errb,resb) => {
 									if(errb){
 										console.error(`in blob cb error occur!!! for  ${m['name']}`[col[cluster.worker.id-1]]);
 										//console.error(JSON.stringify(errb)[col[cluster.worker.id-1]]);
